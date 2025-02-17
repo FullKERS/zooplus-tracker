@@ -27,5 +27,11 @@ class Subcampaign extends Model
      */
     protected $fillable = ['subcampaign_name', 'order_number', 'quantity', 'status', 'campaign_id'];
 
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
+    }
+
+
     
 }

@@ -27,5 +27,10 @@ class Campaign extends Model
      */
     protected $fillable = ['campaign_name'];
 
+    public function subcampaigns()
+    {
+        return $this->hasMany(Subcampaign::class);
+    }
+
     
 }

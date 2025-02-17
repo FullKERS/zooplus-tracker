@@ -38,9 +38,10 @@ class SubcampaignController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('adminSubcampaigns.subcampaigns.create');
+        $campaignId = $request->get('campaign_id');
+        return view('adminSubcampaigns.subcampaigns.create', compact('campaignId'));
     }
 
     /**
@@ -57,7 +58,7 @@ class SubcampaignController extends Controller
         
         Subcampaign::create($requestData);
 
-        return redirect('admin/subcampaigns')->with('flash_message', 'Subcampaign added!');
+        return redirect()->route('admin.campaigns.show', $request->campaign_id)->with('flash_message', 'Subcampaign added!');
     }
 
     /**

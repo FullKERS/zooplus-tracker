@@ -25,6 +25,8 @@
                     {{ csrf_field() }}
 
                     @include ('adminSubcampaigns.subcampaigns.form', ['formMode' => 'create'])
+                    <input type="hidden" name="campaign_id" value="{{ $campaignId }}">
+
 
                 </form>
 

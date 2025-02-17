@@ -38,6 +38,8 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td class="px-6 py-4">{{ $item->campaign_name }}</td>
                                         <td>
+                                            
+                                            <a href="{{ url('/admin/subcampaigns/create/' . $item->id) }}" title="Add Subcampaign"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i> Add Subcampaign</button></a>
                                             <a href="{{ url('/admin/campaigns/' . $item->id) }}" title="View Campaign"><button class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i> View</button></a>
                                             <a href="{{ url('/admin/campaigns/' . $item->id . '/edit') }}" title="Edit Campaign"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
 
