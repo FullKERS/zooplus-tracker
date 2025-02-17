@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Ustawienie RewriteBase dla sytuacji, gdy aplikacja jest w podkatalogu
+    RewriteBase /tracker/
+
+    # Jeśli żądanie dotyczy pliku lub katalogu, to nie wykonuj żadnych przekierowań
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Wszystkie inne żądania przekierowuj na index.php
+    RewriteRule ^ index.php [L]
+</IfModule>

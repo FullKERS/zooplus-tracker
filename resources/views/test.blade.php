@@ -1,0 +1,1 @@
+<p>Wartość idSesji to: {{ $idSesji }}</p>
