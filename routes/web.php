@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AppHttpControllersAdmin\CampaignController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,5 @@ Route::middleware(['check.session.seedDMS'])->group(function () {
 
 
 
+
+Route::resource('admin/campaigns', 'App\\Http\\Controllers\\Admin\\CampaignController');
