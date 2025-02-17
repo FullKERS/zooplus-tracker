@@ -34,3 +34,4 @@ Route::middleware(['check.session.seedDMS'])->group(function () {
 
 
 Route::resource('admin/campaigns', 'App\\Http\\Controllers\\Admin\\CampaignController');
+Route::resource('admin/subcampaigns', 'App\\Http\\Controllers\\Admin\\SubcampaignController');
