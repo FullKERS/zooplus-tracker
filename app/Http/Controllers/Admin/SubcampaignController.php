@@ -127,7 +127,7 @@ class SubcampaignController extends Controller
         $subcampaign = Subcampaign::findOrFail($id);
         $subcampaign->update($requestData);
 
-        return redirect('admin/subcampaigns')->with('flash_message', 'Subcampaign updated!');
+        return redirect('admin/campaigns/'.$subcampaign->campaign->id)->with('flash_message', 'Subcampaign updated!');
     }
 
     /**
@@ -139,8 +139,13 @@ class SubcampaignController extends Controller
      */
     public function destroy($id)
     {
-        Subcampaign::destroy($id);
 
-        return redirect('admin/subcampaigns')->with('flash_message', 'Subcampaign deleted!');
+        $subcampaign = Subcampaign::findOrFail($id);
+        
+        $campaignId = $subcampaign->campaign_id;
+
+        $subcampaign->delete();
+
+        return redirect('admin/campaigns/'.$subcampaign->campaign->id)->with('flash_message', 'Subcampaign deleted!');
     }
 }

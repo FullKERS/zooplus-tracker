@@ -8,7 +8,7 @@
                     <div class="card-header">Subcampaign {{ $subcampaign->id }}</div>
                     <div class="card-body">
 
-                        <a href="{{ url('/admin/subcampaigns') }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
+                        <a href="{{ url('/admin/campaigns/'.$subcampaign->campaign->id) }}" title="Back"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
                         <a href="{{ url('/admin/subcampaigns/' . $subcampaign->id . '/edit') }}" title="Edit Subcampaign"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
 
                         <form method="POST" action="{{ url('admin/subcampaigns' . '/' . $subcampaign->id) }}" accept-charset="UTF-8" style="display:inline">

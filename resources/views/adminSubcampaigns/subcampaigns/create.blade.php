@@ -8,7 +8,7 @@
         <div class="card-header">Dodajesz podkampanie do kampanii: {{ $campaign->campaign_name ?? 'Nieznana kampania' }}</div>
 
         <div class="card-body">
-            <a href="{{ url('/admin/subcampaigns') }}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+            <a href="{{ url('/admin/campaigns/'.$campaign->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
             <br/><br/>
 
             @if ($errors->any())
