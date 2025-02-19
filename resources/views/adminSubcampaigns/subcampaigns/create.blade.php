@@ -3,39 +3,77 @@
 @section('title', 'PGX Obwoluty - Panel administracyjny')
 
 @section('content')
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">Create New Subcampaign</div>
-            <div class="card-body">
-                <a href="{{ url('/admin/subcampaigns') }}" title="Back"><button class="btn btn-warning btn-sm"><i
-                            class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
-                <br />
-                <br />
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">Dodajesz podkampanie do kampanii: {{ $campaign->campaign_name ?? 'Nieznana kampania' }}</div>
 
-                @if ($errors->any())
-                    <ul class="alert alert-danger">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                @endif
+        <div class="card-body">
+            <a href="{{ url('/admin/subcampaigns') }}" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+            <br/><br/>
 
-                <form method="POST" action="{{ url('/admin/subcampaigns') }}" accept-charset="UTF-8"
-                    class="form-horizontal" enctype="multipart/form-data">
-                    {{ csrf_field() }}
+            @if ($errors->any())
+                <ul class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            @endif
 
-                    @include ('adminSubcampaigns.subcampaigns.form', ['formMode' => 'create'])
-                    <input type="hidden" name="campaign_id" value="{{ $campaignId }}">
+            <form method="POST" action="{{ url('/admin/subcampaigns') }}" class="form-horizontal" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="campaign_id" value="{{ $campaign_id }}">
 
+                <table class="table table-bordered" id="subcampaignsTable">
+                    <thead>
+                        <tr>
+                            <th>Subcampaign Name</th>
+                            <th>Order Number</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input class="form-control" name="subcampaigns[0][subcampaign_name]" type="text"></td>
+                            <td><input class="form-control" name="subcampaigns[0][order_number]" type="text"></td>
+                            <td><input class="form-control" name="subcampaigns[0][quantity]" type="number"></td>
+                            <td><input class="form-control" name="subcampaigns[0][status]" type="text"></td>
+                            <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                </form>
-
-            </div>
+                <button type="button" class="btn btn-success" id="addRow">Add Subcampaign</button>
+                <br/><br/>
+                <button type="submit" class="btn btn-primary">Save Subcampaigns</button>
+            </form>
         </div>
     </div>
+</div>
+@endsection
 
-@stop
+@section('js')
+<script>
+    let rowIndex = 1;
+    document.getElementById('addRow').addEventListener('click', function () {
+        const table = document.getElementById('subcampaignsTable').querySelector('tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><input class="form-control" name="subcampaigns[\${rowIndex}][subcampaign_name]" type="text"></td>
+            <td><input class="form-control" name="subcampaigns[\${rowIndex}][order_number]" type="text"></td>
+            <td><input class="form-control" name="subcampaigns[\${rowIndex}][quantity]" type="number"></td>
+            <td><input class="form-control" name="subcampaigns[\${rowIndex}][status]" type="text"></td>
+            <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
+        `;
+        table.appendChild(newRow);
+        rowIndex++;
+    });
 
-@section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove-row')) {
+            event.target.closest('tr').remove();
+        }
+    });
+</script>
+@endsection

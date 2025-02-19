@@ -315,6 +315,12 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
+        ['header' => 'Panel administracyjny'],
+        [
+            'text' => 'Kampanie',
+            'url' => 'admin/campaigns',
+            'icon' => 'fas fa-fw fa-user',
+        ],
         [
             'text' => 'blog',
             'url' => 'admin/blog',

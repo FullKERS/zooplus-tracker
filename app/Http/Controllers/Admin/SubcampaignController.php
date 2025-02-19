@@ -38,10 +38,11 @@ class SubcampaignController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create($campaign_id)
     {
-        $campaignId = $request->get('campaign_id');
-        return view('adminSubcampaigns.subcampaigns.create', compact('campaignId'));
+        $campaign = \App\Models\Campaign::find($campaign_id);
+    
+        return view('adminSubcampaigns.subcampaigns.create', compact('campaign_id', 'campaign'));
     }
 
     /**
@@ -53,12 +54,33 @@ class SubcampaignController extends Controller
      */
     public function store(Request $request)
     {
-        
+        /*
         $requestData = $request->all();
         
         Subcampaign::create($requestData);
 
-        return redirect()->route('admin.campaigns.show', $request->campaign_id)->with('flash_message', 'Subcampaign added!');
+        return redirect()->route('admin.campaigns.show', $request->campaign_id)->with('flash_message', 'Subcampaign added!');*/
+        
+            // Pobieramy wszystkie dane subkampanii
+            $subcampaigns = $request->input('subcampaigns');
+
+            // Walidacja danych (opcjonalnie)
+            $validated = $request->validate([
+                'subcampaigns.*.subcampaign_name' => 'required|string',
+                //'subcampaigns.*.order_number' => 'required|string',
+                //'subcampaigns.*.quantity' => 'required|integer',
+                //'subcampaigns.*.status' => 'required|string',
+            ]);
+        
+            foreach ($subcampaigns as $subcampaignData) {
+                $subcampaignData['campaign_id'] = $request->campaign_id; // Ustawienie campaign_id
+        
+                // Tworzenie subkampanii
+                Subcampaign::create($subcampaignData);
+            }
+        
+            // Przekierowanie na stronę kampanii z przekazanym campaign_id
+            return redirect()->to('/admin/campaigns/'.$request->campaign_id)->with('flash_message', 'Subcampaigns added!');
     }
 
     /**
