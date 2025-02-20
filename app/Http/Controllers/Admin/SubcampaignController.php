@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
 use App\Models\Subcampaign;
+use App\Models\Campaign;
+use App\Models\Country;
 use Illuminate\Http\Request;
 
 class SubcampaignController extends Controller
@@ -41,8 +43,9 @@ class SubcampaignController extends Controller
     public function create($campaign_id)
     {
         $campaign = \App\Models\Campaign::find($campaign_id);
+        $countries = Country::all();  // Pobranie wszystkich krajów
     
-        return view('adminSubcampaigns.subcampaigns.create', compact('campaign_id', 'campaign'));
+        return view('adminSubcampaigns.subcampaigns.create', compact('campaign_id', 'campaign', 'countries'));
     }
 
     /**
@@ -74,7 +77,7 @@ class SubcampaignController extends Controller
         
             foreach ($subcampaigns as $subcampaignData) {
                 $subcampaignData['campaign_id'] = $request->campaign_id; // Ustawienie campaign_id
-        
+
                 // Tworzenie subkampanii
                 Subcampaign::create($subcampaignData);
             }
@@ -107,8 +110,10 @@ class SubcampaignController extends Controller
     public function edit($id)
     {
         $subcampaign = Subcampaign::findOrFail($id);
+        $countries = Country::all();  // Pobranie wszystkich krajów
+        $campaigns = Campaign::all();
 
-        return view('adminSubcampaigns.subcampaigns.edit', compact('subcampaign'));
+        return view('adminSubcampaigns.subcampaigns.edit', compact('subcampaign', 'countries', 'campaigns'));
     }
 
     /**

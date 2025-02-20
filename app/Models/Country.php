@@ -27,5 +27,10 @@ class Country extends Model
      */
     protected $fillable = ['name', 'iso_code', 'flag_image'];
 
+    public function subcampaigns()
+    {
+        return $this->hasMany(Subcampaign::class);
+    }
+
     
 }

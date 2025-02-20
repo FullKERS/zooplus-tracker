@@ -60,7 +60,12 @@
                     @foreach($campaign->subcampaigns as $subcampaign)
                     <tr>
                         <td>{{ $subcampaign->id }}</td>
-                        <td>{{ $subcampaign->subcampaign_name }}</td>
+                        <td>
+                            @if($subcampaign->country && $subcampaign->country->flag_image)
+                                {{ $subcampaign->country->flag_image }}
+                            @endif
+                            {{ $subcampaign->subcampaign_name }}
+                        </td>
                         <td>{{ $subcampaign->order_number }}</td>
                         <td>{{ $subcampaign->quantity }}</td>
                         <td>
