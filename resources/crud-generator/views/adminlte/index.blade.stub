@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'PGX Obwoluty - Panel administracyjny')
+@section('title', 'ZooPlus Tracker - Panel administracyjny')
 
 @section('content')
 
