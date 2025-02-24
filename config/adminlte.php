@@ -326,6 +326,11 @@ return [
             'url' => 'admin/countries',
             'icon' => 'fas fa-fw fa-user',
         ],
+        [
+            'text' => 'Statusy',
+            'url' => 'admin/statuses',
+            'icon' => 'fas fa-fw fa-user',
+        ],
         /*[
             'text' => 'blog',
             'url' => 'admin/blog',
