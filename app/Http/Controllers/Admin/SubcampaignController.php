@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Subcampaign;
 use App\Models\Campaign;
 use App\Models\Country;
+use App\Models\Status;
 use Illuminate\Http\Request;
 
 class SubcampaignController extends Controller
@@ -112,8 +113,9 @@ class SubcampaignController extends Controller
         $subcampaign = Subcampaign::findOrFail($id);
         $countries = Country::all();  // Pobranie wszystkich krajów
         $campaigns = Campaign::all();
+        $statuses = Status::all();
 
-        return view('adminSubcampaigns.subcampaigns.edit', compact('subcampaign', 'countries', 'campaigns'));
+        return view('adminSubcampaigns.subcampaigns.edit', compact('subcampaign', 'countries', 'campaigns', 'statuses'));
     }
 
     /**

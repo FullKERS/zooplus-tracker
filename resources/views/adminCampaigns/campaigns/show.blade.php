@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'ZooPlus Tracker - Panel administracyjny')
+@section('title', 'ZooPlus Dashboard -  Panel administracyjny')
 
 @section('content')
 <div class="col-md-12">

@@ -37,6 +37,11 @@ class Subcampaign extends Model
         return $this->belongsTo(Country::class);
     }
 
+    public function statuses()
+    {
+        return $this->hasMany(SubcampaignStatus::class);
+    }
+
 
 
     

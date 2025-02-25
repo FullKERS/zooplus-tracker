@@ -50,6 +50,87 @@
     {!! $errors->first('campaign_id', '<p class="help-block">:message</p>') !!}
 </div>
 
+<h4>Status History</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Status Date</th>
+            <th>Is Visible</th>
+            <th>Is Assigned</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($subcampaign->statuses as $index => $subStatus)
+        <tr>
+            <td>
+                <select class="form-control" name="statuses[{{ $index }}][status_id]">
+                    @foreach($statuses as $status)
+                        <option value="{{ $status->id }}" {{ $subStatus->status_id == $status->id ? 'selected' : '' }}>
+                            {{ $status->status_name }}
+                        </option>
+                    @endforeach
+                </select>
+            </td>
+            <td>
+                <input type="datetime-local" class="form-control" name="statuses[{{ $index }}][status_date]" 
+                       value="{{ \Carbon\Carbon::parse($subStatus->status_date)->format('Y-m-d\TH:i') }}">
+            </td>
+            <td>
+                <input type="checkbox" name="statuses[{{ $index }}][is_visible]" value="1" {{ $subStatus->is_visible ? 'checked' : '' }}>
+            </td>
+            <td>
+                <input type="checkbox" name="statuses[{{ $index }}][is_assigned]" value="1" {{ $subStatus->is_assigned ? 'checked' : '' }}>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger remove-status">Remove</button>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-success" id="add-status">Add Status</button>
+
+<script>
+    document.getElementById('add-status').addEventListener('click', function() {
+        let tableBody = document.querySelector('table tbody');
+        let index = tableBody.children.length;
+        let newRow = `
+            <tr>
+                <td>
+                    <select class="form-control" name="statuses[${index}][status_id]">
+                        @foreach($statuses as $status)
+                            <option value="{{ $status->id }}">{{ $status->status_name }}</option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <input type="datetime-local" class="form-control" name="statuses[${index}][status_date]" value="{{ now()->format('Y-m-d\TH:i') }}">
+                </td>
+                <td>
+                    <input type="checkbox" name="statuses[${index}][is_visible]" value="1">
+                </td>
+                <td>
+                    <input type="checkbox" name="statuses[${index}][is_assigned]" value="1">
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger remove-status">Remove</button>
+                </td>
+            </tr>`;
+        tableBody.insertAdjacentHTML('beforeend', newRow);
+    });
+
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-status')) {
+            event.target.closest('tr').remove();
+        }
+    });
+</script>
+
+
 <!-- Przycisk do wysłania formularza -->
 <div class="form-group">
     <input class="btn btn-primary" type="submit" value="{{ $formMode === 'edit' ? 'Update' : 'Create' }}">
