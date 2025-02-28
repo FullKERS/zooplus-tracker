@@ -188,5 +188,5 @@ return [
     ])->toArray(),
 
     'seeddms_url' => env('SEEDDMS_URL', 'http://192.168.1.105/seeddms60x/'),
-
+    'seeddms_url_additional' => env('SEEDDMS_URL_ADDITIONAL', ''),
 ];
