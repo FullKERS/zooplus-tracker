@@ -65,6 +65,6 @@
         type="image/svg+xml" />
     <link rel="apple-touch-icon" sizes="180x180"
         href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}views/bootstrap4/images/apple-touch-icon.png">
-    <title>SeedDMS: Folder &#039;DMS&#039;</title>
+    <title>Dashboard ZooPlus</title>
 
 </head>
