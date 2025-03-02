@@ -20,8 +20,8 @@ use App\Http\Controllers\Admin\SubcampaignController;
 */
 
 Route::get('/login/{idSesji}', [LoginController::class, 'loginWithSessionId']);
-Route::get('/test', function () {
-    return 'Test działa!';
+Route::get('/login', function () {
+    return redirect(env('SEEDDMS_URL'));
 });
 
 Route::middleware(['check.session.seedDMS'])->group(function () {
