@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'ZooPlus Dashboard -  Panel administracyjny')
+@section('title', 'ZooPlus Dashboard - Panel administracyjny')
 
 @section('content')
 <div class="col-md-12">
@@ -44,7 +44,9 @@
                                 <select class="form-control" name="subcampaigns[0][country_id]">
                                     <option value="">Wybierz kraj</option>
                                     @foreach($countries as $country)
-                                    <option value="{{ $country->id }}">{{ $country->flag_image }} {{ $country->name }}</option>
+                                    <option value="{{ $country->id }}" data-text="{{ $country->name }}">
+                                        {{ $country->name }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </td>
@@ -67,6 +69,8 @@
 
 @section('js')
 <script>
+
+
 let rowIndex = 1;
 document.getElementById('addRow').addEventListener('click', function() {
     const table = document.getElementById('subcampaignsTable').querySelector('tbody');
@@ -77,7 +81,7 @@ document.getElementById('addRow').addEventListener('click', function() {
             <select class="form-control" name="subcampaigns[\${rowIndex}][country_id]">
                 <option value="">Wybierz kraj</option>
                 @foreach($countries as $country)
-                    <option value="{{ $country->id }}">{{ $country->flag_image }} {{ $country->name }}</option>
+                    <option value="{{ $country->id }}">{{ $country->name }}</option>
                 @endforeach
             </select>
         </td>
