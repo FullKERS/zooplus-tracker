@@ -39,7 +39,7 @@ class Subcampaign extends Model
 
     public function statuses()
     {
-        return $this->hasMany(SubcampaignStatus::class);
+        return $this->hasMany(SubcampaignStatus::class, 'subcampaign_id');
     }
 
 

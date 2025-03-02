@@ -63,32 +63,57 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($subcampaign->statuses as $index => $subStatus)
-        <tr>
-            <td>
-                <select class="form-control" name="statuses[{{ $index }}][status_id]">
-                    @foreach($statuses as $status)
-                        <option value="{{ $status->id }}" {{ $subStatus->status_id == $status->id ? 'selected' : '' }}>
-                            {{ $status->status_name }}
-                        </option>
-                    @endforeach
-                </select>
-            </td>
-            <td>
-                <input type="datetime-local" class="form-control" name="statuses[{{ $index }}][status_date]" 
-                       value="{{ \Carbon\Carbon::parse($subStatus->status_date)->format('Y-m-d\TH:i') }}">
-            </td>
-            <td>
-                <input type="checkbox" name="statuses[{{ $index }}][is_visible]" value="1" {{ $subStatus->is_visible ? 'checked' : '' }}>
-            </td>
-            <td>
-                <input type="checkbox" name="statuses[{{ $index }}][is_assigned]" value="1" {{ $subStatus->is_assigned ? 'checked' : '' }}>
-            </td>
-            <td>
-                <button type="button" class="btn btn-danger remove-status">Remove</button>
-            </td>
-        </tr>
-        @endforeach
+        @if($subcampaign->statuses->isNotEmpty())
+            @foreach($subcampaign->statuses as $index => $subStatus)
+                <tr>
+                    <td>
+                        <select class="form-control" name="statuses[{{ $index }}][status_id]">
+                            @foreach($statuses as $status)
+                                <option value="{{ $status->id }}" {{ $subStatus->status_id == $status->id ? 'selected' : '' }}>
+                                    {{ $status->status_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="datetime-local" class="form-control" name="statuses[{{ $index }}][status_date]" 
+                               value="{{ \Carbon\Carbon::parse($subStatus->status_date)->format('Y-m-d\TH:i') }}">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="statuses[{{ $index }}][is_visible]" value="1" {{ $subStatus->is_visible ? 'checked' : '' }}>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="statuses[{{ $index }}][is_assigned]" value="1" {{ $subStatus->is_assigned ? 'checked' : '' }}>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-status">Remove</button>
+                    </td>
+                </tr>
+            @endforeach
+        @else
+            @foreach($statuses as $index => $status)
+                <tr>
+                    <td>
+                        <select class="form-control" name="statuses[{{ $index }}][status_id]">
+                            <option value="{{ $status->id }}" selected>{{ $status->status_name }}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="datetime-local" class="form-control" name="statuses[{{ $index }}][status_date]" 
+                               value="{{ now()->format('Y-m-d\TH:i') }}">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="statuses[{{ $index }}][is_visible]" value="1" checked>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="statuses[{{ $index }}][is_assigned]" value="1">
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-status">Remove</button>
+                    </td>
+                </tr>
+            @endforeach
+        @endif
     </tbody>
 </table>
 
@@ -111,7 +136,7 @@
                     <input type="datetime-local" class="form-control" name="statuses[${index}][status_date]" value="{{ now()->format('Y-m-d\TH:i') }}">
                 </td>
                 <td>
-                    <input type="checkbox" name="statuses[${index}][is_visible]" value="1">
+                    <input type="checkbox" name="statuses[${index}][is_visible]" value="1" checked>
                 </td>
                 <td>
                     <input type="checkbox" name="statuses[${index}][is_assigned]" value="1">

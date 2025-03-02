@@ -128,13 +128,38 @@ class SubcampaignController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
         $requestData = $request->all();
-        
-        $subcampaign = Subcampaign::findOrFail($id);
-        $subcampaign->update($requestData);
 
-        return redirect('admin/campaigns/'.$subcampaign->campaign->id)->with('flash_message', 'Subcampaign updated!');
+        // Znajdź subkampanię
+        $subcampaign = Subcampaign::findOrFail($id);
+
+        // Zaktualizuj dane subkampanii
+        $subcampaign->update([
+            'subcampaign_name' => $requestData['subcampaigns'][0]['subcampaign_name'],
+            'order_number' => $requestData['subcampaigns'][0]['order_number'],
+            'quantity' => $requestData['subcampaigns'][0]['quantity'],
+            'status' => $requestData['subcampaigns'][0]['status'],
+            'campaign_id' => $requestData['campaign_id'],
+            'country_id' => $requestData['subcampaigns'][0]['country_id'],
+        ]);
+
+        // **Obsługa statusów**
+        // Usuń stare statusy i dodaj nowe
+        $subcampaign->statuses()->delete();
+
+        if (isset($requestData['statuses'])) {
+            foreach ($requestData['statuses'] as $status) {
+                $subcampaign->statuses()->create([
+                    'status_id' => $status['status_id'],
+                    'status_date' => $status['status_date'],
+                    'is_visible' => isset($status['is_visible']) ? 1 : 0,
+                    'is_assigned' => isset($status['is_assigned']) ? 1 : 0,
+                ]);
+            }
+        }
+
+        return redirect('admin/campaigns/' . $subcampaign->campaign->id)
+            ->with('flash_message', 'Subcampaign updated!');
     }
 
     /**
