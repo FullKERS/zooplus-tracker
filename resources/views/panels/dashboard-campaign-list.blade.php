@@ -60,7 +60,7 @@
                                         {{ $subcampaign->subcampaign_name }}
                                     </td>
                                     <td>{{ $subcampaign->order_number }}</td>
-                                    <td>5000</td>
+                                    <td>{{ $subcampaign->quantity }}</td>
                                     <td><span class="badge badge-warning">In progress</span></td>
                                 </tr>
                                 <tr class="expandable-body">
@@ -68,81 +68,23 @@
 
                                         <div class="subcampaign-details">
                                             <div class="subcampaign-info">
-                                                <p><strong>Quantity:</strong> 10 000 pcs.
+                                                <p><strong>Quantity:</strong> {{ $subcampaign->quantity }} pcs.
                                                 </p>
                                             </div>
 
                                             <div class="line_box timeline_process" style="margin: 40px 0;">
-                                                <div class="text_circle done">
-                                                    <div class="circle">
-                                                        <h4>Przyjęcie zlecenia</h4>
-                                                        <p>01. 11. 2024</p>
+                                                @foreach ($subcampaign->statuses as $status )
+                                                    <div class="text_circle done">
+                                                        <div class="circle">
+                                                            <h4>{{ $status->status->status_name }}</h4>
+                                                            <p>{{ \Carbon\Carbon::parse($status->status_date)->isPast() ? \Carbon\Carbon::parse($status->status_date)->format('Y-m-d') : '' }}</p>
+                                                        </div>
+                                                        <a href="javascript:void(0)" class="tvar"><span
+                                                                data-toggle="popover" title="Info" data-trigger="hover"
+                                                                data-placement="top"
+                                                                data-content="{{ $status->status->status_description }}">i</span></a>
                                                     </div>
-                                                    <a href="javascript:void(0)" class="tvar"><span
-                                                            data-toggle="popover" title="Info" data-trigger="hover"
-                                                            data-placement="top"
-                                                            data-content="Proces przyjęcia zlecenia.">i</span></a>
-                                                </div>
-                                                <div class="text_circle done">
-                                                    <div class="circle">
-                                                        <h4>Akceptacja plików</h4>
-                                                        <p>05. 11. 2024</p>
-                                                    </div>
-                                                    <a href="javascript:void(0)" class="tvar"><span
-                                                            data-toggle="popover" title="Info" data-trigger="hover"
-                                                            data-placement="top"
-                                                            data-content="Weryfikacja i akceptacja przesłanych plików.">i</span></a>
-                                                </div>
-                                                <div class="text_circle done">
-                                                    <div class="circle">
-                                                        <h4>Druk</h4>
-                                                        <p>10. 11. 2024</p>
-                                                    </div>
-                                                    <a href="javascript:void(0)" class="tvar"><span
-                                                            data-toggle="popover" title="Info" data-trigger="hover"
-                                                            data-placement="top"
-                                                            data-content="Rozpoczęcie procesu drukowania.">i</span></a>
-                                                </div>
-                                                <div class="text_circle done">
-                                                    <div class="circle">
-                                                        <h4>Personalizacja</h4>
-                                                        <p>15. 11. 2024</p>
-                                                    </div>
-                                                    <a href="javascript:void(0)" class="tvar"><span
-                                                            data-toggle="popover" title="Info" data-trigger="hover"
-                                                            data-placement="top"
-                                                            data-content="Dodawanie personalizacji.">i</span></a>
-                                                </div>
-                                                <div class="text_circle">
-                                                    <div class="circle">
-                                                        <h4>Introligatornia</h4>
-                                                        <p>20. 11. 2024</p>
-                                                    </div>
-                                                    <a href="javascript:void(0)" class="tvar"><span
-                                                            data-toggle="popover" title="Info" data-trigger="hover"
-                                                            data-placement="top"
-                                                            data-content="Proces introligatorski.">i</span></a>
-                                                </div>
-                                                <div class="text_circle">
-                                                    <div class="circle">
-                                                        <h4>Wysyłka na pocztę</h4>
-                                                        <p>25. 11. 2024</p>
-                                                    </div>
-                                                    <a href="javascript:void(0)" class="tvar"><span
-                                                            data-toggle="popover" title="Info" data-trigger="hover"
-                                                            data-placement="top"
-                                                            data-content="Przekazanie przesyłek na pocztę.">i</span></a>
-                                                </div>
-                                                <div class="text_circle">
-                                                    <div class="circle">
-                                                        <h4>Dystrybucja</h4>
-                                                        <p>30. 11. 2024</p>
-                                                    </div>
-                                                    <a href="javascript:void(0)" class="tvar"><span
-                                                            data-toggle="popover" title="Info" data-trigger="hover"
-                                                            data-placement="top"
-                                                            data-content="Ostateczna dystrybucja przesyłek.">i</span></a>
-                                                </div>
+                                                @endforeach
                                             </div>
 
                                             <script>
