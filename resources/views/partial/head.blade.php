@@ -35,7 +35,7 @@
         src="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}views/{{ $user->theme }}/vendors/bootstrap-datepicker/js/bootstrap-datepicker.js">
     </script>
 
-    <link rel="stylesheet" href="{{ asset('css/zooplus.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/zooplus.css') }}?v={{ time() }}">
     <script src="{{ asset('js/zooplus.js') }}"></script>
     <script src="https://kit.fontawesome.com/dc014db90e.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>

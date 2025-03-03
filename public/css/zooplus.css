@@ -60,6 +60,7 @@
         width: 50%;
         z-index: -1;
    }
+  
     .stav_projektu .text_circle:after,.stav_projektu .text_circle:before {background-color: grey;}
     .line_box h4 {
         color: #189599;
