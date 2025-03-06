@@ -35,7 +35,12 @@
                         </div>
                     </td>
                     <td>{{ $campaign->subcampaignsCount }}</td>
-                    <td><span class="badge badge-warning">In progress</span></td>
+                    <td>
+                        <span
+                            class="badge {{ $campaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
+                            {{ $campaign->status_txt }}
+                        </span>
+                    </td>
                 </tr>
                 <tr class="expandable-body">
                     <td colspan="7">
@@ -61,7 +66,12 @@
                                     </td>
                                     <td>{{ $subcampaign->order_number }}</td>
                                     <td>{{ $subcampaign->quantity }}</td>
-                                    <td><span class="badge badge-warning">In progress</span></td>
+                                    <td>
+                                        <span
+                                            class="badge {{ $subcampaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
+                                            {{ $subcampaign->status_txt }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr class="expandable-body">
                                     <td colspan="5">
@@ -74,16 +84,17 @@
 
                                             <div class="line_box timeline_process" style="margin: 40px 0;">
                                                 @foreach ($subcampaign->statuses as $status )
-                                                    <div class="text_circle done">
-                                                        <div class="circle">
-                                                            <h4>{{ $status->status->status_name }}</h4>
-                                                            <p>{{ \Carbon\Carbon::parse($status->status_date)->isPast() ? \Carbon\Carbon::parse($status->status_date)->format('Y-m-d') : '' }}</p>
-                                                        </div>
-                                                        <a href="javascript:void(0)" class="tvar"><span
-                                                                data-toggle="popover" title="Info" data-trigger="hover"
-                                                                data-placement="top"
-                                                                data-content="{{ $status->status->status_description }}">i</span></a>
+                                                <div class="text_circle done">
+                                                    <div class="circle">
+                                                        <h4>{{ $status->status->status_name }}</h4>
+                                                        <p>{{ \Carbon\Carbon::parse($status->status_date)->isPast() ? \Carbon\Carbon::parse($status->status_date)->format('Y-m-d') : '' }}
+                                                        </p>
                                                     </div>
+                                                    <a href="javascript:void(0)" class="tvar"><span
+                                                            data-toggle="popover" title="Info" data-trigger="hover"
+                                                            data-placement="top"
+                                                            data-content="{{ $status->status->status_description }}">i</span></a>
+                                                </div>
                                                 @endforeach
                                             </div>
 
@@ -99,7 +110,7 @@
 
                                             <div class="subcampaign-links">
                                                 <button class="btn btn-primary"><i class="fa-solid fa-file"></i>
-                                                Campaign files</button>
+                                                    Campaign files</button>
                                                 <button class="btn btn-secondary"><i class="fa-solid fa-check"></i>
                                                     Post documents</button>
                                             </div>

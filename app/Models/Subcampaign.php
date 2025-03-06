@@ -42,6 +42,24 @@ class Subcampaign extends Model
         return $this->hasMany(SubcampaignStatus::class, 'subcampaign_id');
     }
 
+    public function getStatusTxtAttribute(): string
+    {
+        // Pobranie statusu 'Distribution', jeśli istnieje
+        $distributionStatus = $this->statuses()
+            ->whereHas('status', function ($query) {
+                $query->where('status_name', 'Distribution');
+            })
+            ->orderByDesc('status_date')
+            ->first();
+
+        // Jeśli status 'Distribution' istnieje i jego data jest w przeszłości, zwróć 'Completed'
+        if ($distributionStatus && $distributionStatus->status_date <= now()) {
+            return 'Completed';
+        }
+
+        return 'In progress';
+    }
+
 
 
     

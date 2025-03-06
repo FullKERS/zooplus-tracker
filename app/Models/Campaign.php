@@ -44,5 +44,29 @@ class Campaign extends Model
         return $this->subcampaigns()->count();
     }
 
+    public function getStatusTxtAttribute(): string
+    {
+        // Pobieranie wszystkich subkampanii
+        $subcampaigns = $this->subcampaigns()->get();
+
+        // Sprawdzanie, czy są jakieś subkampanie
+        if ($subcampaigns->isEmpty()) {
+            return 'In progress'; // Jeśli brak subkampanii, uznajemy, że jest w trakcie
+        }
+
+        // Liczba subkampanii z status 'Completed'
+        $completedCount = $subcampaigns->filter(function ($subcampaigns) {
+            return $subcampaigns->status_txt === 'Completed';
+        })->count();
+
+        // Jeśli liczba subkampanii 'Completed' jest równa liczbie wszystkich subkampanii, zwróć 'Completed'
+        if ($completedCount === $subcampaigns->count()) {
+            return 'Completed';
+        }
+
+        return 'In progress';
+    }
+
+
     
 }
