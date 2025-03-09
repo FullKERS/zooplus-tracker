@@ -168,3 +168,20 @@
 .datepicker-inline{
     width:100%;
 }
+
+
+
+#calendar .datepicker-days td.marked{
+    color: blue;
+    font-weight: bold;
+}
+
+
+/* Stylowanie modala */
+.campaign-modal {
+    margin-bottom: 20px;
+}
+
+.campaign-modal h4 {
+    color: #ff9900;
+}

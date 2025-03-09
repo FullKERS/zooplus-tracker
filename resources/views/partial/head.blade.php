@@ -39,6 +39,8 @@
     <script src="{{ asset('js/zooplus.js') }}"></script>
     <script src="https://kit.fontawesome.com/dc014db90e.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
 
 
 
