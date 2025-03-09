@@ -155,3 +155,16 @@
        .subline:before {top: -43px;}
    }
    
+/*CALENDAR*/
+
+.datepicker table{
+    width: 100%;
+}
+
+.datepicker td, .datepicker th{
+    width: auto;
+}
+
+.datepicker-inline{
+    width:100%;
+}

@@ -67,6 +67,27 @@ class Campaign extends Model
         return 'In progress';
     }
 
+    public function getCampaignProgressAttribute(): float
+    {
+        // Pobieramy wszystkie subkampanie
+        $subcampaigns = $this->subcampaigns;
+
+        // Suma quantity dla wszystkich subkampanii
+        $totalQuantity = $subcampaigns->sum('quantity');
+
+        // Suma postępów subkampanii ważona quantity
+        $weightedProgress = $subcampaigns->reduce(function ($carry, $subcampaign) use ($totalQuantity) {
+            // Obliczamy postęp subkampanii (z wykorzystaniem pola progress)
+            $subkampaniaProgress = $subcampaign->progress;
+            
+            // Ważona wartość postępu dla subkampanii
+            return $carry + ($subkampaniaProgress * ($subcampaign->quantity / $totalQuantity));
+        }, 0);
+
+        // Zwracamy postęp kampanii (w procentach)
+        return round($weightedProgress, 2);
+    }
+
 
     
 }

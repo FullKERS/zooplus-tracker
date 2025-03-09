@@ -31,6 +31,37 @@
 
 
                             <div class="col-sm-3">
+
+                                <div class="row">
+                                    <div class="card card-success" style="width: 100%;">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Calendar</h3>
+
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="calendar" class="datepicker">
+
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                </div>
+
+                                <div id="campaignModal" style="display: none; border: 1px solid #000; padding: 20px; background: #fff;">
+        <h3 id="campaignName"></h3>
+        <p id="campaignDetails"></p>
+        <button onclick="$('#campaignModal').hide()">Zamknij</button>
+    </div>
+
+
                                 <div class="row">
                                     <div class="card card-success">
                                         <div class="card-header">
@@ -120,6 +151,59 @@
     @include('partial.footer')
 
     @include('partial.scripts')
+
+    <script>
+    $(document).ready(function() {
+        var campaigns = {
+            '2025-03-10': {
+                name: 'Campaign 1',
+                details: 'Details about Campaign 1.'
+            },
+            '2025-03-12': {
+                name: 'Campaign 2',
+                details: 'Details about Campaign 2.'
+            },
+            '2025-03-15': {
+                name: 'Campaign 3',
+                details: 'Details about Campaign 3.'
+            },
+            '2025-03-18': {
+                name: 'Campaign 4',
+                details: 'Details about Campaign 4.'
+            },
+            '2025-03-20': {
+                name: 'Campaign 5',
+                details: 'Details about Campaign 5.'
+            },
+        };
+
+        $('#calendar').datepicker({
+            
+            inline: true,
+            firstDay: 1,
+            beforeShowDay: function(date) {
+                var dateString = $.datepicker.formatDate('yy-mm-dd', date);
+                if (campaigns[dateString]) {
+                    return [true, "highlight-event", campaigns[dateString].name];
+                }
+                return [true, "", ""];
+            },
+            onSelect: function(dateText) {
+                var campaign = campaigns[dateText] || {
+                    name: 'Brak kampanii',
+                    details: 'Brak informacji'
+                };
+                showCampaignModal(campaign);
+            }
+        });
+
+        function showCampaignModal(campaign) {
+            $('#campaignName').text(campaign.name);
+            $('#campaignDetails').text(campaign.details);
+            $('#campaignModal').show();
+        }
+    });
+    </script>
 
 </body>
 

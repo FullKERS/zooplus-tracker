@@ -60,6 +60,23 @@ class Subcampaign extends Model
         return 'In progress';
     }
 
+    public function getProgressAttribute(): float
+    {
+        // Pobieramy wszystkie statusy subkampanii
+        $statuses = $this->statuses;
+
+        // Liczymy ile statusów jest zakończonych (status_date < teraz)
+        $completedStatuses = $statuses->filter(function ($status) {
+            return $status->status_date <= now();
+        });
+
+        // Obliczamy procent zakończonych statusów
+        $progress = $statuses->count() > 0 ? ($completedStatuses->count() / $statuses->count()) * 100 : 0;
+
+        return round($progress, 2); // Zwracamy wynik zaokrąglony do 2 miejsc po przecinku
+    }
+
+
 
 
     

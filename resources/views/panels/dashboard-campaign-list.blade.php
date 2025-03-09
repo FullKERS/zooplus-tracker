@@ -30,7 +30,7 @@
                     <td>15.01.2024</td>
                     <td>
                         <div class="progress progress-xs">
-                            <div class="pprogress-bar bg-success" style="width: 80%">
+                            <div class="pprogress-bar bg-success" style="width: {{ $campaign->campaign_progress }}%">
                             </div>
                         </div>
                     </td>
@@ -50,6 +50,7 @@
                                     <th><i class="fa-solid fa-envelope"></i> Sub-campaign name</th>
                                     <th><i class="fa-solid fa-bars-staggered"></i> Order number</th>
                                     <th><i class="fa-solid fa-copy"></i> Quantity</th>
+                                    <th><i class="fa-solid fa-percent"></i> Progress</th>
                                     <th><i class="fa-solid fa-clipboard-question"></i>
                                         Status
                                     </th>
@@ -66,6 +67,15 @@
                                     </td>
                                     <td>{{ $subcampaign->order_number }}</td>
                                     <td>{{ $subcampaign->quantity }}</td>
+                                    <td>
+                                        <div class="progress progress-xs" style="position: relative;">
+                                            <div class="progress-bar bg-success" style="width: {{ $subcampaign->progress }}%;">
+                                                <span class="progress-text" style="position: absolute; width: 100%; text-align: center; color: #fff; top: 50%; transform: translateY(-50%);">
+                                                    {{ $subcampaign->progress }}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>
                                         <span
                                             class="badge {{ $subcampaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
