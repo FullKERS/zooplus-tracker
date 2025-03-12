@@ -36,7 +36,7 @@ class Campaign extends Model
 
     public function orderNumbers(): Attribute
     {
-        return Attribute::get(fn () => $this->subcampaigns->pluck('order_number')->implode(', '));
+        return Attribute::get(fn () => $this->subcampaigns->pluck('order_number')->unique()->implode(', '));
     }
 
     public function getSubcampaignsCountAttribute()
@@ -85,7 +85,7 @@ class Campaign extends Model
         }, 0);
 
         // Zwracamy postęp kampanii (w procentach)
-        return round($weightedProgress, 2);
+        return round($weightedProgress, 0);
     }
 
 
