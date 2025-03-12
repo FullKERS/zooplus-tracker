@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 
 @include('partial.head')
 
@@ -8,19 +8,16 @@
     @include('partial.nav')
     <div style="">
 
-
-        @include('panels.dashboard-header')
-
         <!-- Main content -->
         <div class="content">
             <div class="container-fluid">
-
-                @include('panels.dashboard-top-panels')
-
-
-
+                @include('panels.dashboard-header')
                 <div class="content-header">
                     <div class="container-fluid">
+
+
+
+                        @include('panels.dashboard-top-panels')
 
                         <div class="row mb-2">
                             <div class="col-sm-9">
@@ -56,7 +53,7 @@
                                 </div>
 
 
-                                
+
 
                                 {{-- @include('panels/dashboard-top5-countries') --}}
 
@@ -144,7 +141,7 @@
             // Iterujemy przez kampanie i zaznaczamy odpowiednie dni w kalendarzu
             campaigns.forEach(function(campaign) {
                 const campaignDate = new Date(campaign
-                .date); // Konwertujemy datę kampanii na obiekt Date
+                    .date); // Konwertujemy datę kampanii na obiekt Date
                 const timestamp = campaignDate.getTime(); // Pobieramy timestamp
 
                 // Szukamy komórki w kalendarzu, której data odpowiada timestampowi kampanii
