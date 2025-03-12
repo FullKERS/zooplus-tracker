@@ -44,20 +44,27 @@ class Subcampaign extends Model
 
     public function getStatusTxtAttribute(): string
     {
-        // Pobranie statusu 'Distribution', jeśli istnieje
+        // Pobranie statusu 'Estimated delivery time', jeśli istnieje
         $distributionStatus = $this->statuses()
             ->whereHas('status', function ($query) {
-                $query->where('status_name', 'Distribution');
+                $query->where('status_name', 'Estimated delivery time');
             })
             ->orderByDesc('status_date')
             ->first();
 
-        // Jeśli status 'Distribution' istnieje i jego data jest w przeszłości, zwróć 'Completed'
+        // Jeśli status 'Estimated delivery time' istnieje i jego data jest w przeszłości, zwróć 'Completed'
         if ($distributionStatus && $distributionStatus->status_date <= now()) {
             return 'Completed';
         }
 
-        return 'In progress';
+        // Pobranie ostatniego statusu (jeśli istnieje)
+        $lastStatus = $this->statuses()
+        ->where('status_date', '<=', now())
+        ->orderByDesc('status_date')
+        ->first();
+
+        // Zwróć nazwę ostatniego statusu, jeśli istnieje, w przeciwnym razie 'In progress'
+        return $lastStatus ? $lastStatus->status->status_name : 'In progress';
     }
 
     public function getProgressAttribute(): float
@@ -73,8 +80,9 @@ class Subcampaign extends Model
         // Obliczamy procent zakończonych statusów
         $progress = $statuses->count() > 0 ? ($completedStatuses->count() / $statuses->count()) * 100 : 0;
 
-        return round($progress, 2); // Zwracamy wynik zaokrąglony do 2 miejsc po przecinku
+        return round($progress, 0); // Zwracamy wynik zaokrąglony do 2 miejsc po przecinku
     }
+
 
 
 

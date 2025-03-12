@@ -9,13 +9,13 @@
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
-                    <th><i class="fa-solid fa-envelope"></i> Campaign name</th>
-                    <th><i class="fa-solid fa-bars-staggered"></i> Order number</th>
-                    <th><i class="fa-solid fa-calendar-days"></i> Date of admission</th>
-                    <th><i class="fa-solid fa-calendar-days"></i> End date</th>
-                    <th><i class="fa-solid fa-percent"></i> Progress</th>
-                    <th><i class="fa-solid fa-copy"></i> Number of versions</th>
-                    <th><i class="fa-solid fa-clipboard-question"></i> Status</th>
+                    <th class="td-min-40"><i class="fa-solid fa-envelope"></i> Campaign name</th>
+                    <th class="td-center"><i class="fa-solid fa-bars-staggered"></i> PGX order number</th>
+                    <th class="td-center"><i class="fa-solid fa-calendar-days"></i> Date of admission</th>
+                    <th class="td-center"><i class="fa-solid fa-calendar-days"></i> End date</th>
+                    <th class="td-center td-min-20"><i class="fa-solid fa-percent"></i> Progress</th>
+                    <th class="td-center"><i class="fa-solid fa-copy"></i> Number of versions</th>
+                    <th class="td-center"><i class="fa-solid fa-clipboard-question"></i> Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,17 +25,18 @@
                     <td><i class="icon-campaigne fa-solid fa-folder-plus"></i>
                         {{ $campaign->campaign_name }}
                     </td>
-                    <td>{{ $campaign->orderNumbers }}</td>
-                    <td>01.01.2024</td>
-                    <td>15.01.2024</td>
-                    <td>
-                        <div class="progress progress-xs">
-                            <div class="pprogress-bar bg-success" style="width: {{ $campaign->campaign_progress }}%">
+                    <td class="td-center">{{ $campaign->orderNumbers }}</td>
+                    <td class="td-center">01.01.2024</td>
+                    <td class="td-center">15.01.2024</td>
+                    <td class="td-center">
+                        <div class="progress progress-xs" style="position: relative;">
+                            <div class="progress-bar bg-success" style="width: {{ $campaign->campaign_progress }}%;">
                             </div>
+                            <span class="progress-text">{{ $campaign->campaign_progress }}%</span>
                         </div>
                     </td>
-                    <td>{{ $campaign->subcampaignsCount }}</td>
-                    <td>
+                    <td class="td-center">{{ $campaign->subcampaignsCount }}</td>
+                    <td class="td-center">
                         <span
                             class="badge {{ $campaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
                             {{ $campaign->status_txt }}
@@ -47,11 +48,11 @@
                         <table class="table table-bordered table-hover sub-campaign-table">
                             <thead>
                                 <tr>
-                                    <th><i class="fa-solid fa-envelope"></i> Sub-campaign name</th>
-                                    <th><i class="fa-solid fa-bars-staggered"></i> Order number</th>
-                                    <th><i class="fa-solid fa-copy"></i> Quantity</th>
-                                    <th><i class="fa-solid fa-percent"></i> Progress</th>
-                                    <th><i class="fa-solid fa-clipboard-question"></i>
+                                    <th class="td-min-40"><i class="fa-solid fa-envelope"></i> Sub-campaign name</th>
+                                    <th class="td-center"><i class="fa-solid fa-bars-staggered"></i> PGX order number</th>
+                                    <th class="td-center"><i class="fa-solid fa-copy"></i> Quantity</th>
+                                    <th class="td-center"><i class="fa-solid fa-calendar-days"></i> Estimated delivery time</th>
+                                    <th class="td-center td-min-20"><i class="fa-solid fa-clipboard-question"></i>
                                         Status
                                     </th>
                                 </tr>
@@ -65,18 +66,27 @@
                                         @endif
                                         {{ $subcampaign->subcampaign_name }}
                                     </td>
-                                    <td>{{ $subcampaign->order_number }}</td>
-                                    <td>{{ $subcampaign->quantity }}</td>
-                                    <td>
-                                        <div class="progress progress-xs" style="position: relative;">
-                                            <div class="progress-bar bg-success" style="width: {{ $subcampaign->progress }}%;">
-                                                <span class="progress-text" style="position: absolute; width: 100%; text-align: center; color: #fff; top: 50%; transform: translateY(-50%);">
-                                                    {{ $subcampaign->progress }}%
-                                                </span>
-                                            </div>
-                                        </div>
+                                    <td class="td-center">{{ $subcampaign->order_number }}</td>
+                                    <td class="td-center">{{ number_format($subcampaign->quantity, 0, ',', ' ') }} pcs.</td>
+                                    <td class="td-center">
+                                        @php
+                                        /*$deliveryStatus = $subcampaign->statuses->firstWhere('status.status_name',
+                                        'Estimated delivery time');
+                                        $deliveryDate = $deliveryStatus ?
+                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') : 'TBC';*/
+                                        $deliveryStatus = $subcampaign->statuses->firstWhere('status.status_name', 'Estimated delivery time');
+                                        $shipmentDispatch = $subcampaign->statuses->firstWhere('status.status_name', 'Shipment dispatch');
+
+                                        if ($deliveryStatus && (\Carbon\Carbon::parse($deliveryStatus->status_date)->isPast() || $shipmentDispatch)) {
+                                            $deliveryDate = \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d');
+                                        } else {
+                                            $deliveryDate = 'TBC';
+                                        }
+                                        @endphp
+
+                                        {{ $deliveryDate }}
                                     </td>
-                                    <td>
+                                    <td class="td-center">
                                         <span
                                             class="badge {{ $subcampaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
                                             {{ $subcampaign->status_txt }}
@@ -87,33 +97,36 @@
                                     <td colspan="5">
 
                                         <div class="subcampaign-details">
-                                            <div class="subcampaign-info">
-                                                <p><strong>Quantity:</strong> {{ $subcampaign->quantity }} pcs.
-                                                </p>
-                                            </div>
 
-                                            <div class="line_box timeline_process" style="margin: 40px 0;">
-                                                @foreach ($subcampaign->statuses as $status )
-                                                <div class="text_circle done">
-                                                    <div class="circle">
-                                                        <h4>{{ $status->status->status_name }}</h4>
-                                                        <p>{{ \Carbon\Carbon::parse($status->status_date)->isPast() ? \Carbon\Carbon::parse($status->status_date)->format('Y-m-d') : '' }}
-                                                        </p>
-                                                    </div>
-                                                    <a href="javascript:void(0)" class="tvar"><span
-                                                            data-toggle="popover" title="Info" data-trigger="hover"
-                                                            data-placement="top"
-                                                            data-content="{{ $status->status->status_description }}">i</span></a>
+
+                                            <div class="timeline-box">
+                                                @foreach ($subcampaign->statuses as $index => $status)
+                                                @php
+                                                $statusDate = \Carbon\Carbon::parse($status->status_date);
+                                                $isPast = $statusDate->isPast();
+                                                @endphp
+
+                                                <div class="status-box {{ $isPast ? '' : 'expected' }}"
+                                                    data-toggle="tooltip" data-placement="top"
+                                                    title="{{ $status->status->status_description }}">
+                                                    <h4>{{ $status->status->status_name }}</h4>
+                                                    <p>{{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: '.$statusDate->format('Y-m-d')  }}
+                                                    </p>
                                                 </div>
+
+                                                @if (!$loop->last)
+                                                <span class="arrow">→</span>
+                                                @endif
                                                 @endforeach
                                             </div>
 
                                             <script>
                                             $(function() {
-                                                $('[data-toggle="popover"]')
-                                                    .popover();
+                                                $('[data-toggle="tooltip"]').tooltip();
                                             });
                                             </script>
+
+
 
 
 

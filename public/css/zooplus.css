@@ -1,3 +1,27 @@
+table th{
+    font-weight:600;
+}
+
+.table thead th, .table th, .table td{
+    vertical-align: middle !important;
+}
+
+.td-center{
+    text-align: center;
+}
+
+
+.td-min-10 { min-width: 10%; }
+.td-min-20 { min-width: 20%; }
+.td-min-30 { min-width: 30%; }
+.td-min-40 { min-width: 40%; }
+.td-min-50 { min-width: 50%; }
+.td-min-60 { min-width: 60%; }
+.td-min-70 { min-width: 70%; }
+.td-min-80 { min-width: 80%; }
+.td-min-90 { min-width: 90%; }
+.td-min-100 { min-width: 100%; }
+
 .clickable { cursor: pointer; }
     .timeline {
         list-style: none;
@@ -184,4 +208,71 @@
 
 .campaign-modal h4 {
     color: #ff9900;
+}
+
+
+/*TIMELINE*/
+.timeline-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 1rem 0;
+    position: relative;
+}
+.status-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    background: #4CAF5026;
+    color: black;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #4CAF50;
+  }
+  .status-box.expected {
+    background: #cccccc29;
+    color: #666;
+    border: 1px solid #ccc;
+  }
+.status-box h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+.status-box p {
+    margin: 5px 0 0;
+    font-size: 12px;
+}
+.arrow {
+    flex: 0;
+    font-size: 1.5rem;
+    color: #4CAF50;
+    margin: 0 10px;
+      margin-bottom: 0px;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+.expected + .arrow {
+    color: #ccc;
+}
+
+/*PROGRESS BAR*/
+.progress {
+    position: relative;
+    text-align: center;
+}
+
+.progress-text {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-weight: bold;
+    color: #fff;
 }
