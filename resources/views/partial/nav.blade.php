@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom fixed-top">
         <a class="navbar-brand" href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.ViewFolder.php"><img id="navbar-logo"
                 src="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}views/{{ $user->theme }}/images/seeddms-logo.svg"> <span
-                class="d-none d-md-inline-block ml-4">@</span></a>
+                class="d-none d-md-inline-block ml-4">PrintHub</span></a>
         <form action="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.Search.php" class="form-inline ml-4 mr-auto"
             autocomplete="off"> <input type="hidden" name="folderid" value="1" /> <input type="hidden" name="navBar"
                 value="1" /> <input name="query" class="form-control mr-sm-2 search-query" id="searchfield"
@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link"
-                        href="{{ config('app.seeddms_url') }}/dashboard-zooplus">Dashboard</a></li>
+                        href="#">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link"
                         href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.Calendar.php?mode=y">Calendar</a></li>
             </ul>
