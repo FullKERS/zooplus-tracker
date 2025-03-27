@@ -14,7 +14,7 @@
                     <th class="td-center"><i class="fa-solid fa-calendar-days"></i> Date of admission</th>
                     <th class="td-center"><i class="fa-solid fa-calendar-days"></i> End date</th>
                     <th class="td-center td-min-20"><i class="fa-solid fa-percent"></i> Progress</th>
-                    <th class="td-center"><i class="fa-solid fa-copy"></i> Number of versions</th>
+                    <th class="td-center"><i class="fa-solid fa-copy"></i> Number of countries</th>
                     <th class="td-center"><i class="fa-solid fa-clipboard-question"></i> Status</th>
                 </tr>
             </thead>
@@ -125,18 +125,6 @@
                                                 $('[data-toggle="tooltip"]').tooltip();
                                             });
                                             </script>
-
-
-
-
-
-
-                                            <div class="subcampaign-links">
-                                                <button class="btn btn-primary"><i class="fa-solid fa-file"></i>
-                                                    Campaign files</button>
-                                                <button class="btn btn-secondary"><i class="fa-solid fa-check"></i>
-                                                    Post documents</button>
-                                            </div>
                                         </div>
 
                                     </td>
