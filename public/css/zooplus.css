@@ -341,3 +341,13 @@ table th{
     text-align: center;
     color: #6c757d;
 }
+
+.card.mb-4 {
+    margin-bottom: 2rem !important;
+}
+
+#activeCampaigns_global_filter,
+#completedCampaigns_global_filter {
+    max-width: 500px;
+    margin-left: auto;
+}

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use DateTime;
+use Carbon\Carbon;
 
 class Campaign extends Model
 {
@@ -114,6 +115,17 @@ class Campaign extends Model
             ->max('status_date');
 
         return $date ? new DateTime($date) : null;
+    }
+
+    public function getEarliestEstimatedDelivery()
+    {
+        $dates = $this->subcampaigns->flatMap(function($subcampaign) {
+            return $subcampaign->statuses
+                ->where('status.status_name', 'Estimated delivery time')
+                ->pluck('status_date');
+        })->sort();
+
+        return $dates->first() ? Carbon::parse($dates->first()) : now()->addYears(10);
     }
 
 

@@ -1,12 +1,12 @@
 <div class="card card-success">
     <div class="card-header">
-        <h3 class="card-title">Campaign List</h3>
+        <h3 class="card-title">Active Campaigns</h3>
         <div class="card-tools">
-            <div class="dataTables-controls" id="campaignsTable_global_filter">
+            <div class="dataTables-controls" id="activeCampaigns_global_filter">
                 <div class="input-group">
-                    <input type="text" id="globalFilter" class="form-control" placeholder="Search all columns...">
+                    <input type="text" id="activeGlobalFilter" class="form-control" placeholder="Search all columns...">
                     <div class="input-group-append">
-                        <button class="btn btn-default" id="resetFilters">
+                        <button class="btn btn-default" id="activeResetFilters">
                             <i class="fa fa-undo"></i> Reset
                         </button>
                     </div>
@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="card-body">
-        <table class="table table-bordered table-hover" id="campaignsTable">
+        <table class="table table-bordered table-hover" id="activeCampaignsTable">
             <thead>
                 <tr>
                     <th class="td-min-40 sortable" data-sort-key="campaign_name">
@@ -80,7 +80,7 @@
                 </tr>
             </thead>
             <tbody id="campaignsBody">
-                @foreach($campaignes as $campaign)
+                @foreach($activeCampaigns as $campaign)
 
                 <tr class="main-row" data-id="{{ $campaign->id }}" data-campaign-name="{{ $campaign->campaign_name }}"
                     data-order-numbers="{{ $campaign->orderNumbers }}"
@@ -222,17 +222,250 @@
         <div class="pagination-container mt-3">
             <div class="pagination-info mb-2"></div>
             <nav>
-                <ul class="pagination justify-content-center"></ul>
+                <ul class="pagination justify-content-center" id="activePagination"></ul>
             </nav>
         </div>
     </div>
 </div>
 
+<!-- KAMPANIE ZAKONCZONE-->
+<div class="card card-success">
+    <div class="card-header">
+        <h3 class="card-title">Completed Campaigns</h3>
+        <div class="card-tools">
+            <div class="dataTables-controls" id="completedCampaigns_global_filter">
+                <div class="input-group">
+                    <input type="text" id="completedGlobalFilter" class="form-control" placeholder="Search all columns...">
+                    <div class="input-group-append">
+                        <button class="btn btn-default" id="completedResetFilters">
+                            <i class="fa fa-undo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-hover" id="completedCampaignsTable">
+            <thead>
+                <tr>
+                    <th class="td-min-40 sortable" data-sort-key="campaign_name">
+                        <i class="fa-solid fa-envelope"></i> Campaign name
+                        <span class="sort-indicator"></span>
+                    </th>
+                    <th class="td-center sortable" data-sort-key="orderNumbers">
+                        <i class="fa-solid fa-bars-staggered"></i> PGX order number
+                        <span class="sort-indicator"></span>
+                    </th>
+                    <th class="td-center sortable" data-sort-key="date_admission">
+                        <i class="fa-solid fa-calendar-days"></i> Date of admission
+                        <span class="sort-indicator"></span>
+                    </th>
+                    <th class="td-center sortable" data-sort-key="end_date">
+                        <i class="fa-solid fa-calendar-days"></i> End date
+                        <span class="sort-indicator"></span>
+                    </th>
+                    <th class="td-center sortable" data-sort-key="campaign_progress">
+                        <i class="fa-solid fa-percent"></i> Progress
+                        <span class="sort-indicator"></span>
+                    </th>
+                    <th class="td-center sortable" data-sort-key="subcampaignsCount">
+                        <i class="fa-solid fa-copy"></i> Number of countries
+                        <span class="sort-indicator"></span>
+                    </th>
+                    <th class="td-center sortable" data-sort-key="status">
+                        <i class="fa-solid fa-clipboard-question"></i> Status
+                        <span class="sort-indicator"></span>
+                    </th>
+                </tr>
+                <tr class="column-filters">
+                    <th>
+                        <input type="text" class="form-control column-filter" data-column="campaign_name"
+                            placeholder="Filter...">
+                    </th>
+                    <th>
+                        <input type="text" class="form-control column-filter" data-column="orderNumbers"
+                            placeholder="Filter...">
+                    </th>
+                    <th>
+                        <input type="date" class="form-control column-filter" data-column="date_admission">
+                    </th>
+                    <th>
+                        <input type="date" class="form-control column-filter" data-column="end_date">
+                    </th>
+                    <th>
+                        <input type="number" class="form-control column-filter" data-column="campaign_progress"
+                            placeholder="%">
+                    </th>
+                    <th>
+                        <input type="number" class="form-control column-filter" data-column="subcampaignsCount"
+                            placeholder="#">
+                    </th>
+                    <th>
+                        <select class="form-control column-filter" data-column="status">
+                            <option value="">All</option>
+                            <option value="Completed">Completed</option>
+                            <option value="In Progress">In Progress</option>
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="campaignsBody">
+                @foreach($completedCampaigns as $campaign)
+
+                <tr class="main-row" data-id="{{ $campaign->id }}" data-campaign-name="{{ $campaign->campaign_name }}"
+                    data-order-numbers="{{ $campaign->orderNumbers }}"
+                    data-date-admission="{{ $campaign->getDateAdmission() ? $campaign->getDateAdmission()->format('Y-m-d') : ''  }}" data-end-date="{{ $campaign->getEndDate() ? $campaign->getEndDate()->format('Y-m-d') : ''}}"
+                    data-campaign-progress="{{ $campaign->campaign_progress }}"
+                    data-subcampaigns-count="{{ $campaign->subcampaignsCount }}"
+                    data-status="{{ $campaign->status_txt }}" data-widget="expandable-table" aria-expanded="false">
+                    <!-- Zawartość głównego wiersza -->
+
+                    <td><i class="icon-campaigne fa-solid fa-folder-plus"></i>
+                        {{ $campaign->campaign_name }}
+                    </td>
+                    <td class="td-center">{{ $campaign->orderNumbers }}</td>
+                    <td class="td-center">
+                        {{ $campaign->getDateAdmission() ? $campaign->getDateAdmission()->format('Y-m-d') : 'N/A'  }}
+                    </td>
+                    <td class="td-center">
+                        {{ $campaign->getEndDate() ? $campaign->getEndDate()->format('Y-m-d') : 'N/A' }}
+                    </td>
+                    <td class="td-center">
+                        <div class="progress progress-xs" style="position: relative;">
+                            <div class="progress-bar bg-success" style="width: {{ $campaign->campaign_progress }}%;">
+                            </div>
+                            <span class="progress-text">{{ $campaign->campaign_progress }}%</span>
+                        </div>
+                    </td>
+                    <td class="td-center">{{ $campaign->subcampaignsCount }}</td>
+                    <td class="td-center">
+                        <span
+                            class="badge {{ $campaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
+                            {{ $campaign->status_txt }}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="expandable-body" data-parent-id="{{ $campaign->id }}">
+                    <td colspan="7">
+                        <table class="table table-bordered table-hover sub-campaign-table">
+                            <thead>
+                                <tr>
+                                    <th class="td-min-40"><i class="fa-solid fa-envelope"></i> Sub-campaign name</th>
+                                    <th class="td-center"><i class="fa-solid fa-bars-staggered"></i> PGX order number
+                                    </th>
+                                    <th class="td-center"><i class="fa-solid fa-copy"></i> Quantity</th>
+                                    <th class="td-center"><i class="fa-solid fa-calendar-days"></i> Estimated delivery
+                                        time</th>
+                                    <th class="td-center td-min-20"><i class="fa-solid fa-clipboard-question"></i>
+                                        Status
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($campaign->subcampaigns as $subcampaign)
+                                <tr data-widget="expandable-table" aria-expanded="false">
+                                    <td>
+                                        @if(isset($subcampaign->country->flag_image))
+                                        {{ $subcampaign->country->flag_image }}
+                                        @endif
+                                        {{ $subcampaign->subcampaign_name }}
+                                    </td>
+                                    <td class="td-center">{{ $subcampaign->order_number }}</td>
+                                    <td class="td-center">{{ number_format($subcampaign->quantity, 0, ',', ' ') }} pcs.
+                                    </td>
+                                    <td class="td-center">
+                                        @php
+                                        /*$deliveryStatus = $subcampaign->statuses->firstWhere('status.status_name',
+                                        'Estimated delivery time');
+                                        $deliveryDate = $deliveryStatus ?
+                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') : 'TBC';*/
+                                        $deliveryStatus = $subcampaign->statuses->firstWhere('status.status_name',
+                                        'Estimated delivery time');
+                                        $shipmentDispatch = $subcampaign->statuses->firstWhere('status.status_name',
+                                        'Shipment dispatch');
+
+                                        if ($deliveryStatus &&
+                                        (\Carbon\Carbon::parse($deliveryStatus->status_date)->isPast() ||
+                                        $shipmentDispatch)) {
+                                        $deliveryDate =
+                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d');
+                                        } else {
+                                        $deliveryDate = 'TBC';
+                                        }
+                                        @endphp
+
+                                        {{ $deliveryDate }}
+                                    </td>
+                                    <td class="td-center">
+                                        <span
+                                            class="badge {{ $subcampaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
+                                            {{ $subcampaign->status_txt }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="expandable-body">
+                                    <td colspan="5">
+
+                                        <div class="subcampaign-details">
+
+
+                                            <div class="timeline-box">
+                                                @foreach ($subcampaign->statuses as $index => $status)
+                                                @php
+                                                $statusDate = \Carbon\Carbon::parse($status->status_date);
+                                                $isPast = $statusDate->isPast();
+                                                @endphp
+
+                                                <div class="status-box {{ $isPast ? '' : 'expected' }}"
+                                                    data-toggle="tooltip" data-placement="top"
+                                                    title="{{ $status->status->status_description }}">
+                                                    <h4>{{ $status->status->status_name }}</h4>
+                                                    <p>{{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: '.$statusDate->format('Y-m-d')  }}
+                                                    </p>
+                                                </div>
+
+                                                @if (!$loop->last)
+                                                <span class="arrow">→</span>
+                                                @endif
+                                                @endforeach
+                                            </div>
+
+                                            <script>
+                                            $(function() {
+                                                $('[data-toggle="tooltip"]').tooltip();
+                                            });
+                                            </script>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                @endforeach
+            </tbody>
+        </table>
+
+        <div class="pagination-container mt-3">
+            <div class="pagination-info mb-2"></div>
+            <nav>
+                <ul class="pagination justify-content-center" id="completedPagination"></ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
 <script>
 class CampaignTable {
     constructor(tableId) {
         this.table = document.getElementById(tableId);
-        this.globalFilterDOM = document.getElementById(tableId+'_global_filter');
+        this.paginationId = `${tableId}Pagination`;
+        this.globalFilterId = tableId + '_global_filter';
         this.itemsPerPage = 10;
         this.currentPage = 1;
         this.currentSort = { key: null, direction: 'asc' };
@@ -314,8 +547,8 @@ class CampaignTable {
     }
 
     addFilters() {
-        const globalFilter = this.globalFilterDOM.querySelector('#globalFilter');
-        const resetBtn = this.globalFilterDOM.querySelector('#resetFilters');
+        const globalFilter = document.getElementById(this.globalFilterId)?.querySelector('#globalFilter');
+        const resetBtn = document.getElementById(this.globalFilterId)?.querySelector('#resetFilters');
 
         this.table.querySelectorAll('.column-filter').forEach(input => {
             input.addEventListener('input', () => {
@@ -340,7 +573,7 @@ class CampaignTable {
                     }
                 });
                 
-                const globalFilter = this.globalFilterDOM.querySelector('#globalFilter');
+                const globalFilter = document.getElementById(this.globalFilterId)?.querySelector('#globalFilter');
                 if(globalFilter) globalFilter.value = '';
                 
                 // Przefiltruj ponownie
@@ -351,7 +584,7 @@ class CampaignTable {
     }
 
     applyFilters() {
-        const globalFilter = this.globalFilterDOM.querySelector('#globalFilter')?.value.toLowerCase().trim();
+        const globalFilter = document.getElementById(this.globalFilterId)?.querySelector('#globalFilter')?.value.toLowerCase().trim();
         const columnFilters = {
             campaign_name: this.table.querySelector('[data-column="campaign_name"]')?.value.toLowerCase().trim(),
             orderNumbers: this.table.querySelector('[data-column="orderNumbers"]')?.value.toLowerCase().trim(),
@@ -406,7 +639,7 @@ class CampaignTable {
     }
 
     setupPagination() {
-        const pagination = this.table.parentElement.querySelector('.pagination');
+        const pagination = document.getElementById(this.paginationId );
         if(pagination) pagination.addEventListener('click', (e) => {
             const pageItem = e.target.closest('.page-item');
             if(pageItem) {
@@ -509,10 +742,7 @@ class CampaignTable {
 
 // Inicjalizacja tabeli
 document.addEventListener('DOMContentLoaded', () => {
-    // Dla pierwszej tabeli
-    new CampaignTable('campaignsTable');
-    
-    // Jeśli będzie druga tabela, inicjalizuj drugą instancję
-    // new CampaignTable('campaignsBody2');
+    new CampaignTable('activeCampaignsTable');
+    new CampaignTable('completedCampaignsTable');
 });
 </script>
