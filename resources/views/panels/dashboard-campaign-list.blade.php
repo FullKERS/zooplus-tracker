@@ -79,7 +79,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="campaignsBody">
+            <tbody id="campaignsBodyActive">
                 @foreach($activeCampaigns as $campaign)
 
                 <tr class="main-row" data-id="{{ $campaign->id }}" data-campaign-name="{{ $campaign->campaign_name }}"
@@ -310,7 +310,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="campaignsBody">
+            <tbody id="campaignsBodyCompleted">
                 @foreach($completedCampaigns as $campaign)
 
                 <tr class="main-row" data-id="{{ $campaign->id }}" data-campaign-name="{{ $campaign->campaign_name }}"
