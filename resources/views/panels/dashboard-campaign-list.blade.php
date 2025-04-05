@@ -4,9 +4,9 @@
         <div class="card-tools">
             <div class="dataTables-controls" id="activeCampaigns_global_filter">
                 <div class="input-group">
-                    <input type="text" id="activeGlobalFilter" class="form-control" placeholder="Search all columns...">
+                    <input type="text" id="activeCampaignsTableGlobalFilter" class="form-control" placeholder="Search all columns...">
                     <div class="input-group-append">
-                        <button class="btn btn-default" id="activeResetFilters">
+                        <button class="btn btn-default" id="activeCampaignsTableResetFilters">
                             <i class="fa fa-undo"></i> Reset
                         </button>
                     </div>
@@ -235,9 +235,9 @@
         <div class="card-tools">
             <div class="dataTables-controls" id="completedCampaigns_global_filter">
                 <div class="input-group">
-                    <input type="text" id="completedGlobalFilter" class="form-control" placeholder="Search all columns...">
+                    <input type="text" id="completedCampaignsTableGlobalFilter" class="form-control" placeholder="Search all columns...">
                     <div class="input-group-append">
-                        <button class="btn btn-default" id="completedResetFilters">
+                        <button class="btn btn-default" id="completedCampaignsTableResetFilters">
                             <i class="fa fa-undo"></i> Reset
                         </button>
                     </div>
@@ -465,7 +465,8 @@ class CampaignTable {
     constructor(tableId) {
         this.table = document.getElementById(tableId);
         this.paginationId = `${tableId}Pagination`;
-        this.globalFilterId = tableId + '_global_filter';
+        this.globalFilterId = `${tableId}GlobalFilter`;
+        this.resetButtonId = `${tableId}ResetFilters`;
         this.itemsPerPage = 10;
         this.currentPage = 1;
         this.currentSort = { key: null, direction: 'asc' };
@@ -547,8 +548,8 @@ class CampaignTable {
     }
 
     addFilters() {
-        const globalFilter = document.getElementById(this.globalFilterId)?.querySelector('#globalFilter');
-        const resetBtn = document.getElementById(this.globalFilterId)?.querySelector('#resetFilters');
+        const globalFilter = document.getElementById(this.globalFilterId);
+        const resetBtn = document.getElementById(this.resetButtonId);
 
         this.table.querySelectorAll('.column-filter').forEach(input => {
             input.addEventListener('input', () => {
@@ -573,7 +574,7 @@ class CampaignTable {
                     }
                 });
                 
-                const globalFilter = document.getElementById(this.globalFilterId)?.querySelector('#globalFilter');
+                const globalFilter = document.getElementById(this.globalFilterId);
                 if(globalFilter) globalFilter.value = '';
                 
                 // Przefiltruj ponownie
@@ -584,7 +585,7 @@ class CampaignTable {
     }
 
     applyFilters() {
-        const globalFilter = document.getElementById(this.globalFilterId)?.querySelector('#globalFilter')?.value.toLowerCase().trim();
+        const globalFilter = document.getElementById(this.globalFilterId).value.toLowerCase().trim();
         const columnFilters = {
             campaign_name: this.table.querySelector('[data-column="campaign_name"]')?.value.toLowerCase().trim(),
             orderNumbers: this.table.querySelector('[data-column="orderNumbers"]')?.value.toLowerCase().trim(),
