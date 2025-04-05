@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use DateTime;
 
 class Campaign extends Model
 {
@@ -86,6 +87,28 @@ class Campaign extends Model
 
         // Zwracamy postęp kampanii (w procentach)
         return round($weightedProgress, 0);
+    }
+
+
+    public function getDateAdmission()
+    {
+        // Wersja statyczna - do zmiany później
+        return new DateTime('2025-01-01'); // Format Y-m-d dla danych w dataset
+        
+        // Docelowo będzie pobierać z bazy:
+        // return $this->date_admission->format('Y-m-d');
+    }
+
+    /**
+     * Get static end date (temporary implementation)
+     */
+    public function getEndDate()
+    {
+        // Wersja statyczna - do zmiany później
+        return new DateTime('2025-01-15'); // Format Y-m-d dla danych w dataset
+        
+        // Docelowo będzie pobierać z bazy:
+        // return $this->end_date->format('Y-m-d');
     }
 
 

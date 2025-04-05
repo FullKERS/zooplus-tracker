@@ -276,3 +276,68 @@ table th{
     font-weight: bold;
     color: #fff;
 }
+
+/* Usprawnienia wizualne */
+.table-hover tbody tr.main-row:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.expandable-body {
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.sub-campaign-table {
+    background-color: white;
+    border-left: 3px solid #28a745;
+    margin: 10px 0;
+}
+
+.sortable {
+    cursor: pointer;
+    position: relative;
+    min-width: 120px;
+}
+
+.sort-indicator {
+    position: absolute;
+    right: 8px;
+    color: #28a745;
+}
+
+.progress-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #000;
+}
+
+.timeline-box {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    flex-wrap: wrap;
+}
+
+
+.arrow {
+    color: #6c757d;
+    margin: 0 10px;
+}
+
+.td-center {
+    text-align: center;
+    vertical-align: middle!important;
+}
+
+.card-tools {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pagination-info {
+    text-align: center;
+    color: #6c757d;
+}
