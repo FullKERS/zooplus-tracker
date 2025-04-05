@@ -90,25 +90,30 @@ class Campaign extends Model
     }
 
 
-    public function getDateAdmission()
+    public function getDateAdmission(): ?DateTime
     {
-        // Wersja statyczna - do zmiany później
-        return new DateTime('2025-01-01'); // Format Y-m-d dla danych w dataset
-        
-        // Docelowo będzie pobierać z bazy:
-        // return $this->date_admission->format('Y-m-d');
+        $date = SubcampaignStatus::whereHas('subcampaign', function ($query) {
+                $query->where('campaign_id', $this->id);
+            })
+            ->whereHas('status', function ($query) {
+                $query->where('status_name', 'Order Received');
+            })
+            ->min('status_date');
+
+        return $date ? new DateTime($date) : null;
     }
 
-    /**
-     * Get static end date (temporary implementation)
-     */
-    public function getEndDate()
+    public function getEndDate(): ?DateTime
     {
-        // Wersja statyczna - do zmiany później
-        return new DateTime('2025-01-15'); // Format Y-m-d dla danych w dataset
-        
-        // Docelowo będzie pobierać z bazy:
-        // return $this->end_date->format('Y-m-d');
+        $date = SubcampaignStatus::whereHas('subcampaign', function ($query) {
+                $query->where('campaign_id', $this->id);
+            })
+            ->whereHas('status', function ($query) {
+                $query->where('status_name', 'Shipment dispatch');
+            })
+            ->max('status_date');
+
+        return $date ? new DateTime($date) : null;
     }
 
 

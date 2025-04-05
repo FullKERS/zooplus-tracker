@@ -2,7 +2,7 @@
     <div class="card-header">
         <h3 class="card-title">Campaign List</h3>
         <div class="card-tools">
-            <div class="dataTables-controls">
+            <div class="dataTables-controls" id="campaignsTable_global_filter">
                 <div class="input-group">
                     <input type="text" id="globalFilter" class="form-control" placeholder="Search all columns...">
                     <div class="input-group-append">
@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="card-body">
-        <table class="table table-bordered table-hover" id="campaignsBody">
+        <table class="table table-bordered table-hover" id="campaignsTable">
             <thead>
                 <tr>
                     <th class="td-min-40 sortable" data-sort-key="campaign_name">
@@ -84,7 +84,7 @@
 
                 <tr class="main-row" data-id="{{ $campaign->id }}" data-campaign-name="{{ $campaign->campaign_name }}"
                     data-order-numbers="{{ $campaign->orderNumbers }}"
-                    data-date-admission="{{ $campaign->date_admission }}" data-end-date="{{ $campaign->end_date}}"
+                    data-date-admission="{{ $campaign->getDateAdmission() ? $campaign->getDateAdmission()->format('Y-m-d') : ''  }}" data-end-date="{{ $campaign->getEndDate() ? $campaign->getEndDate()->format('Y-m-d') : ''}}"
                     data-campaign-progress="{{ $campaign->campaign_progress }}"
                     data-subcampaigns-count="{{ $campaign->subcampaignsCount }}"
                     data-status="{{ $campaign->status_txt }}" data-widget="expandable-table" aria-expanded="false">
@@ -94,8 +94,12 @@
                         {{ $campaign->campaign_name }}
                     </td>
                     <td class="td-center">{{ $campaign->orderNumbers }}</td>
-                    <td class="td-center">{{ $campaign->date_admission}}</td>
-                    <td class="td-center">{{ $campaign->end_date}}</td>
+                    <td class="td-center">
+                        {{ $campaign->getDateAdmission() ? $campaign->getDateAdmission()->format('Y-m-d') : 'N/A'  }}
+                    </td>
+                    <td class="td-center">
+                        {{ $campaign->getEndDate() ? $campaign->getEndDate()->format('Y-m-d') : 'N/A' }}
+                    </td>
                     <td class="td-center">
                         <div class="progress progress-xs" style="position: relative;">
                             <div class="progress-bar bg-success" style="width: {{ $campaign->campaign_progress }}%;">
@@ -228,6 +232,7 @@
 class CampaignTable {
     constructor(tableId) {
         this.table = document.getElementById(tableId);
+        this.globalFilterDOM = document.getElementById(tableId+'_global_filter');
         this.itemsPerPage = 10;
         this.currentPage = 1;
         this.currentSort = { key: null, direction: 'asc' };
@@ -309,8 +314,8 @@ class CampaignTable {
     }
 
     addFilters() {
-        const globalFilter = this.table.parentElement.querySelector('#globalFilter');
-        const resetBtn = this.table.parentElement.querySelector('#resetFilters');
+        const globalFilter = this.globalFilterDOM.querySelector('#globalFilter');
+        const resetBtn = this.globalFilterDOM.querySelector('#resetFilters');
 
         this.table.querySelectorAll('.column-filter').forEach(input => {
             input.addEventListener('input', () => {
@@ -324,22 +329,32 @@ class CampaignTable {
             this.updateTable();
         });
 
-        if(resetBtn) resetBtn.addEventListener('click', () => {
-            this.table.querySelectorAll('.column-filter').forEach(input => {
-                if(input.tagName === 'SELECT') input.value = '';
-                else input.value = '';
+        if(resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                // Resetuj wszystkie filtry
+                this.table.querySelectorAll('.column-filter').forEach(input => {
+                    if(input.tagName === 'SELECT') {
+                        input.value = '';
+                    } else {
+                        input.value = '';
+                    }
+                });
+                
+                const globalFilter = this.globalFilterDOM.querySelector('#globalFilter');
+                if(globalFilter) globalFilter.value = '';
+                
+                // Przefiltruj ponownie
+                this.currentPage = 1;
+                this.updateTable();
             });
-            if(globalFilter) globalFilter.value = '';
-            this.currentPage = 1;
-            this.updateTable();
-        });
+        }
     }
 
     applyFilters() {
-        const globalFilter = this.table.parentElement.querySelector('#globalFilter')?.value.toLowerCase();
+        const globalFilter = this.globalFilterDOM.querySelector('#globalFilter')?.value.toLowerCase().trim();
         const columnFilters = {
-            campaign_name: this.table.querySelector('[data-column="campaign_name"]')?.value.toLowerCase(),
-            orderNumbers: this.table.querySelector('[data-column="orderNumbers"]')?.value.toLowerCase(),
+            campaign_name: this.table.querySelector('[data-column="campaign_name"]')?.value.toLowerCase().trim(),
+            orderNumbers: this.table.querySelector('[data-column="orderNumbers"]')?.value.toLowerCase().trim(),
             date_admission: this.table.querySelector('[data-column="date_admission"]')?.value,
             end_date: this.table.querySelector('[data-column="end_date"]')?.value,
             campaign_progress: this.table.querySelector('[data-column="campaign_progress"]')?.value,
@@ -353,25 +368,27 @@ class CampaignTable {
 
             // Filtrowanie kolumnowe
             Object.entries(columnFilters).forEach(([key, value]) => {
-                if(value && value.trim() !== '') {
+                if(value && value !== '') {
                     const dataValue = data[key]?.toString().toLowerCase() || '';
                     
                     if(key.includes('date')) {
                         const filterDate = new Date(value);
                         const rowDate = new Date(data[key]);
-                        visible = !isNaN(filterDate) && !isNaN(rowDate) 
-                            && filterDate.getTime() === rowDate.getTime();
-                    } else if(['campaign_progress', 'subcampaignsCount'].includes(key)) {
-                        visible = parseFloat(data[key]) >= parseFloat(value);
-                    } else {
-                        visible = dataValue.includes(value.toLowerCase());
+                        visible = visible && (!isNaN(filterDate) && !isNaN(rowDate) 
+                            && filterDate.getTime() === rowDate.getTime());
+                    } 
+                    else if(['campaign_progress', 'subcampaignsCount'].includes(key)) {
+                        visible = visible && (parseFloat(data[key] || 0) >= parseFloat(value));
+                    } 
+                    else {
+                        visible = visible && dataValue.includes(value.toLowerCase());
                     }
                 }
             });
 
             // Filtrowanie globalne
-            if(globalFilter && globalFilter.trim() !== '') {
-                const searchableValues = [
+            if(globalFilter) {
+                const searchValues = [
                     data.campaign_name,
                     data.orderNumbers,
                     data.date_admission,
@@ -380,8 +397,8 @@ class CampaignTable {
                     data.subcampaignsCount,
                     data.status
                 ].join(' ').toLowerCase();
-
-                visible = visible && searchableValues.includes(globalFilter);
+                
+                visible = visible && searchValues.includes(globalFilter);
             }
 
             group.visible = visible;
@@ -407,11 +424,15 @@ class CampaignTable {
         const startIdx = (this.currentPage - 1) * this.itemsPerPage;
         const endIdx = startIdx + this.itemsPerPage;
 
-        // Usuń i dodaj ponownie wiersze w dobrej kolejności
         const tbody = this.table.querySelector('tbody');
         tbody.innerHTML = '';
-        
+
         visibleGroups.slice(startIdx, endIdx).forEach(group => {
+            // Resetowanie stanu rozwijania
+            group.expandable.style.display = 'none';
+            group.main.querySelector('.icon-campaigne').classList.remove('fa-folder-open');
+            group.main.querySelector('.icon-campaigne').classList.add('fa-folder-plus');
+
             tbody.appendChild(group.main);
             tbody.appendChild(group.expandable);
         });
@@ -444,14 +465,15 @@ class CampaignTable {
     }
 
     initExpandable() {
-        // Inicjalizacja rozwijania wierszy
         this.table.addEventListener('click', (e) => {
             const mainRow = e.target.closest('.main-row');
             if(mainRow) {
                 const expandableRow = mainRow.nextElementSibling;
-                //expandableRow.style.display = expandableRow.style.display === 'none' ? '' : 'none';
-                mainRow.querySelector('.icon-campaigne').classList.toggle('fa-folder-plus');
-                mainRow.querySelector('.icon-campaigne').classList.toggle('fa-folder-open');
+                const isExpanded = expandableRow.style.display === 'none';
+                    
+                expandableRow.style.display = isExpanded ? '' : 'none';
+                mainRow.querySelector('.icon-campaigne').classList.toggle('fa-folder-plus', !isExpanded);
+                mainRow.querySelector('.icon-campaigne').classList.toggle('fa-folder-open', isExpanded);
             }
         });
     }
@@ -488,7 +510,7 @@ class CampaignTable {
 // Inicjalizacja tabeli
 document.addEventListener('DOMContentLoaded', () => {
     // Dla pierwszej tabeli
-    new CampaignTable('campaignsBody');
+    new CampaignTable('campaignsTable');
     
     // Jeśli będzie druga tabela, inicjalizuj drugą instancję
     // new CampaignTable('campaignsBody2');
