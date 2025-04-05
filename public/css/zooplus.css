@@ -11,16 +11,16 @@ table th{
 }
 
 
-.td-min-10 { min-width: 10%; }
-.td-min-20 { min-width: 20%; }
-.td-min-30 { min-width: 30%; }
-.td-min-40 { min-width: 40%; }
-.td-min-50 { min-width: 50%; }
-.td-min-60 { min-width: 60%; }
-.td-min-70 { min-width: 70%; }
-.td-min-80 { min-width: 80%; }
-.td-min-90 { min-width: 90%; }
-.td-min-100 { min-width: 100%; }
+.td-min-10 { min-width: 10% !important; }
+.td-min-20 { min-width: 20% !important; }
+.td-min-30 { min-width: 30% !important; }
+.td-min-40 { min-width: 40% !important; }
+.td-min-50 { min-width: 50% !important; }
+.td-min-60 { min-width: 60% !important; }
+.td-min-70 { min-width: 70% !important; }
+.td-min-80 { min-width: 80% !important; }
+.td-min-90 { min-width: 90% !important; }
+.td-min-100 { min-width: 100% !important; }
 
 .clickable { cursor: pointer; }
     .timeline {

@@ -16,15 +16,8 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
-        $keyword = $request->get('search');
-        $perPage = 25;
-
-        if (!empty($keyword)) {
-            $campaigns = Campaign::where('campaign_name', 'LIKE', "%$keyword%")
-                ->latest()->paginate($perPage);
-        } else {
-            $campaigns = Campaign::latest()->paginate($perPage);
-        }
+        $campaigns = Campaign::where('campaign_name', 'LIKE', "%$keyword%")
+                ->latest();
 
         return view('adminCampaigns.campaigns.index', compact('campaigns'));
     }
