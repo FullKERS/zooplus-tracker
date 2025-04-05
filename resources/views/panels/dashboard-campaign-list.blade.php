@@ -15,6 +15,16 @@
         </div>
     </div>
     <div class="card-body">
+        @if($activeCampaigns->isEmpty())
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-calendar-times fa-3x"></i>
+                    <div class="empty-state-icon-shadow"></div>
+                </div>
+                <p class="lead text-muted mb-4">No active campaigns at the moment</p>
+
+            </div>
+        @else
         <table class="table table-bordered table-hover" id="activeCampaignsTable">
             <thead>
                 <tr>
@@ -218,7 +228,7 @@
                 @endforeach
             </tbody>
         </table>
-
+        @endif
         <div class="pagination-container mt-3">
             <div class="pagination-info mb-2"></div>
             <nav>
@@ -246,6 +256,16 @@
         </div>
     </div>
     <div class="card-body">
+    @if($completedCampaigns->isEmpty())
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-folder-open fa-4x"></i>
+                <div class="empty-state-icon-shadow"></div>
+            </div>
+            <h2>Nothing to show here... yet!</h2>
+            <p class="lead text-muted mb-4">No completed campaigns found.</p>
+        </div>
+    @else
         <table class="table table-bordered table-hover" id="completedCampaignsTable">
             <thead>
                 <tr>
@@ -449,6 +469,7 @@
                 @endforeach
             </tbody>
         </table>
+    @endif
 
         <div class="pagination-container mt-3">
             <div class="pagination-info mb-2"></div>

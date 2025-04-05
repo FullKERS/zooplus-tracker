@@ -356,3 +356,47 @@ table th{
 .bg-quantity {
     background-color: #ff851b !important;
   }
+
+
+  /*EMPTY TABLE*/
+
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+    border: 2px dashed #dee2e6;
+}
+
+.empty-state-icon {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: #adb5bd;
+}
+
+.empty-state-icon-shadow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 70%);
+    transform: translate(-50%, -50%);
+}
+
+.btn-pill {
+    border-radius: 50rem;
+    padding: 0.5rem 1.5rem;
+}
+
+
+
+.table-countries td {
+    vertical-align: middle;
+}
+.table-countries img {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
