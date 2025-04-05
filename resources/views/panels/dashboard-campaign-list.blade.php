@@ -222,7 +222,7 @@
         <div class="pagination-container mt-3">
             <div class="pagination-info mb-2"></div>
             <nav>
-                <ul class="pagination justify-content-center" id="activePagination"></ul>
+                <ul class="pagination justify-content-center" id="activeCampaignsTablePagination"></ul>
             </nav>
         </div>
     </div>
@@ -453,7 +453,7 @@
         <div class="pagination-container mt-3">
             <div class="pagination-info mb-2"></div>
             <nav>
-                <ul class="pagination justify-content-center" id="completedPagination"></ul>
+                <ul class="pagination justify-content-center" id="completedCampaignsTablePagination"></ul>
             </nav>
         </div>
     </div>
