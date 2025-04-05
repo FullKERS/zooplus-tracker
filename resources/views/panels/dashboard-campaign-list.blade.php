@@ -1,6 +1,6 @@
 <div class="card card-success">
     <div class="card-header">
-        <h3 class="card-title">Active Campaigns</h3>
+        <h3 class="card-title"><i class="far fa-folder-open"></i> Active Campaigns</h3>
         <div class="card-tools">
             <div class="dataTables-controls" id="activeCampaigns_global_filter">
                 <div class="input-group">
@@ -231,7 +231,7 @@
 <!-- KAMPANIE ZAKONCZONE-->
 <div class="card card-success">
     <div class="card-header">
-        <h3 class="card-title">Completed Campaigns</h3>
+        <h3 class="card-title"><i class="fas fa-check-circle "></i> Completed Campaigns</h3>
         <div class="card-tools">
             <div class="dataTables-controls" id="completedCampaigns_global_filter">
                 <div class="input-group">

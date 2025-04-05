@@ -351,3 +351,8 @@ table th{
     max-width: 500px;
     margin-left: auto;
 }
+
+
+.bg-quantity {
+    background-color: #ff851b !important;
+  }
