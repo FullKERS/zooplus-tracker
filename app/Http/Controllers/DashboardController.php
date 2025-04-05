@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Session;
 use App\Models\Campaign;
+use App\Models\Statistic;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -15,6 +16,14 @@ class DashboardController extends Controller
         $user = $request->get('authenticated_user');
         
         $campaignes = Campaign::with(['subcampaigns.statuses.status'])->get();
+
+        $stats = [
+            'projects_total' => Statistic::projectsTotal(),
+            'open_projects' => Statistic::openProjects(),
+            'completed_projects' => Statistic::completedProjects(),
+            'total_quantity' => Statistic::totalQuantityShipped()
+        ];
+    
 
         // Podział na aktywne/zakończone
         $activeCampaigns = $campaignes->filter(function($campaign) {
@@ -34,7 +43,7 @@ class DashboardController extends Controller
             return $campaign->getEarliestEstimatedDelivery();
         });
 
-        return view('dashboard', compact('user', 'activeCampaigns', 'completedCampaigns'));
+        return view('dashboard', compact('user', 'activeCampaigns', 'completedCampaigns', 'stats'));
     }
 
     public function logout(Request $request)
