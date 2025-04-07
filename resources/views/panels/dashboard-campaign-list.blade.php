@@ -4,7 +4,8 @@
         <div class="card-tools">
             <div class="dataTables-controls" id="activeCampaigns_global_filter">
                 <div class="input-group">
-                    <input type="text" id="activeCampaignsTableGlobalFilter" class="form-control" placeholder="Search all columns...">
+                    <input type="text" id="activeCampaignsTableGlobalFilter" class="form-control"
+                        placeholder="Search all columns...">
                     <div class="input-group-append">
                         <button class="btn btn-default" id="activeCampaignsTableResetFilters">
                             <i class="fa fa-undo"></i> Reset
@@ -16,14 +17,14 @@
     </div>
     <div class="card-body">
         @if($activeCampaigns->isEmpty())
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <i class="fas fa-calendar-times fa-3x"></i>
-                    <div class="empty-state-icon-shadow"></div>
-                </div>
-                <p class="lead text-muted mb-4">No active campaigns at the moment</p>
-
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-calendar-times fa-3x"></i>
+                <div class="empty-state-icon-shadow"></div>
             </div>
+            <p class="lead text-muted mb-4">No active campaigns at the moment</p>
+
+        </div>
         @else
         <table class="table table-bordered table-hover" id="activeCampaignsTable">
             <thead>
@@ -94,7 +95,8 @@
 
                 <tr class="main-row" data-id="{{ $campaign->id }}" data-campaign-name="{{ $campaign->campaign_name }}"
                     data-order-numbers="{{ $campaign->orderNumbers }}"
-                    data-date-admission="{{ $campaign->getDateAdmission() ? $campaign->getDateAdmission()->format('Y-m-d') : ''  }}" data-end-date="{{ $campaign->getEndDate() ? $campaign->getEndDate()->format('Y-m-d') : ''}}"
+                    data-date-admission="{{ $campaign->getDateAdmission() ? $campaign->getDateAdmission()->format('Y-m-d') : ''  }}"
+                    data-end-date="{{ $campaign->getEndDate() ? $campaign->getEndDate()->format('Y-m-d') : ''}}"
                     data-campaign-progress="{{ $campaign->campaign_progress }}"
                     data-subcampaigns-count="{{ $campaign->subcampaignsCount }}"
                     data-status="{{ $campaign->status_txt }}" data-widget="expandable-table" aria-expanded="false">
@@ -197,17 +199,17 @@
                                                 @endphp
                                                 @if($status->status->status_name != 'Order Received')
 
-                                                    <div class="status-box {{ $isPast ? '' : 'expected' }}"
-                                                        data-toggle="tooltip" data-placement="top"
-                                                        title="{{ $status->status->status_description }}">
-                                                        <h4>{{ $status->status->status_name }}</h4>
-                                                        <p>{{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: '.$statusDate->format('Y-m-d')  }}
-                                                        </p>
-                                                    </div>
-                                                    
-                                                    @if (!$loop->last)
-                                                    <span class="arrow">→</span>
-                                                    @endif
+                                                <div class="status-box {{ $isPast ? '' : 'expected' }}"
+                                                    data-toggle="tooltip" data-placement="top"
+                                                    title="{{ $status->status->status_description }}">
+                                                    <h4>{{ $status->status->status_name }}</h4>
+                                                    <p>{{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: '.$statusDate->format('Y-m-d')  }}
+                                                    </p>
+                                                </div>
+
+                                                @if (!$loop->last)
+                                                <span class="arrow">→</span>
+                                                @endif
 
                                                 @endif
                                                 @endforeach
@@ -248,7 +250,8 @@
         <div class="card-tools">
             <div class="dataTables-controls" id="completedCampaigns_global_filter">
                 <div class="input-group">
-                    <input type="text" id="completedCampaignsTableGlobalFilter" class="form-control" placeholder="Search all columns...">
+                    <input type="text" id="completedCampaignsTableGlobalFilter" class="form-control"
+                        placeholder="Search all columns...">
                     <div class="input-group-append">
                         <button class="btn btn-default" id="completedCampaignsTableResetFilters">
                             <i class="fa fa-undo"></i> Reset
@@ -259,7 +262,7 @@
         </div>
     </div>
     <div class="card-body">
-    @if($completedCampaigns->isEmpty())
+        @if($completedCampaigns->isEmpty())
         <div class="empty-state">
             <div class="empty-state-icon">
                 <i class="fas fa-folder-open fa-4x"></i>
@@ -268,7 +271,7 @@
             <h2>Nothing to show here... yet!</h2>
             <p class="lead text-muted mb-4">No completed campaigns found.</p>
         </div>
-    @else
+        @else
         <table class="table table-bordered table-hover" id="completedCampaignsTable">
             <thead>
                 <tr>
@@ -338,7 +341,8 @@
 
                 <tr class="main-row" data-id="{{ $campaign->id }}" data-campaign-name="{{ $campaign->campaign_name }}"
                     data-order-numbers="{{ $campaign->orderNumbers }}"
-                    data-date-admission="{{ $campaign->getDateAdmission() ? $campaign->getDateAdmission()->format('Y-m-d') : ''  }}" data-end-date="{{ $campaign->getEndDate() ? $campaign->getEndDate()->format('Y-m-d') : ''}}"
+                    data-date-admission="{{ $campaign->getDateAdmission() ? $campaign->getDateAdmission()->format('Y-m-d') : ''  }}"
+                    data-end-date="{{ $campaign->getEndDate() ? $campaign->getEndDate()->format('Y-m-d') : ''}}"
                     data-campaign-progress="{{ $campaign->campaign_progress }}"
                     data-subcampaigns-count="{{ $campaign->subcampaignsCount }}"
                     data-status="{{ $campaign->status_txt }}" data-widget="expandable-table" aria-expanded="false">
@@ -476,7 +480,7 @@
                 @endforeach
             </tbody>
         </table>
-    @endif
+        @endif
 
         <div class="pagination-container mt-3">
             <div class="pagination-info mb-2"></div>
@@ -497,7 +501,10 @@ class CampaignTable {
         this.resetButtonId = `${tableId}ResetFilters`;
         this.itemsPerPage = 10;
         this.currentPage = 1;
-        this.currentSort = { key: null, direction: 'asc' };
+        this.currentSort = {
+            key: null,
+            direction: 'asc'
+        };
         this.init();
     }
 
@@ -513,10 +520,10 @@ class CampaignTable {
     createRowGroups() {
         const groups = [];
         const mainRows = this.table.querySelectorAll('tr.main-row');
-        
+
         mainRows.forEach(mainRow => {
             const expandableRow = mainRow.nextElementSibling;
-            if(expandableRow && expandableRow.classList.contains('expandable-body')) {
+            if (expandableRow && expandableRow.classList.contains('expandable-body')) {
                 // Popraw mapowanie nazw atrybutów
                 groups.push({
                     main: mainRow,
@@ -533,7 +540,7 @@ class CampaignTable {
                 });
             }
         });
-        
+
         return groups;
     }
 
@@ -541,8 +548,9 @@ class CampaignTable {
         this.table.querySelectorAll('.sortable').forEach(header => {
             header.addEventListener('click', () => {
                 const sortKey = header.dataset.sortKey;
-                if(this.currentSort.key === sortKey) {
-                    this.currentSort.direction = this.currentSort.direction === 'asc' ? 'desc' : 'asc';
+                if (this.currentSort.key === sortKey) {
+                    this.currentSort.direction = this.currentSort.direction === 'asc' ? 'desc' :
+                        'asc';
                 } else {
                     this.currentSort.key = sortKey;
                     this.currentSort.direction = 'asc';
@@ -586,25 +594,25 @@ class CampaignTable {
             });
         });
 
-        if(globalFilter) globalFilter.addEventListener('input', () => {
+        if (globalFilter) globalFilter.addEventListener('input', () => {
             this.currentPage = 1;
             this.updateTable();
         });
 
-        if(resetBtn) {
+        if (resetBtn) {
             resetBtn.addEventListener('click', () => {
                 // Resetuj wszystkie filtry
                 this.table.querySelectorAll('.column-filter').forEach(input => {
-                    if(input.tagName === 'SELECT') {
+                    if (input.tagName === 'SELECT') {
                         input.value = '';
                     } else {
                         input.value = '';
                     }
                 });
-                
+
                 const globalFilter = document.getElementById(this.globalFilterId);
-                if(globalFilter) globalFilter.value = '';
-                
+                if (globalFilter) globalFilter.value = '';
+
                 // Przefiltruj ponownie
                 this.currentPage = 1;
                 this.updateTable();
@@ -615,7 +623,8 @@ class CampaignTable {
     applyFilters() {
         const globalFilter = document.getElementById(this.globalFilterId).value.toLowerCase().trim();
         const columnFilters = {
-            campaign_name: this.table.querySelector('[data-column="campaign_name"]')?.value.toLowerCase().trim(),
+            campaign_name: this.table.querySelector('[data-column="campaign_name"]')?.value.toLowerCase()
+            .trim(),
             orderNumbers: this.table.querySelector('[data-column="orderNumbers"]')?.value.toLowerCase().trim(),
             date_admission: this.table.querySelector('[data-column="date_admission"]')?.value,
             end_date: this.table.querySelector('[data-column="end_date"]')?.value,
@@ -630,26 +639,24 @@ class CampaignTable {
 
             // Filtrowanie kolumnowe
             Object.entries(columnFilters).forEach(([key, value]) => {
-                if(value && value !== '') {
+                if (value && value !== '') {
                     const dataValue = data[key]?.toString().toLowerCase() || '';
-                    
-                    if(key.includes('date')) {
+
+                    if (key.includes('date')) {
                         const filterDate = new Date(value);
                         const rowDate = new Date(data[key]);
-                        visible = visible && (!isNaN(filterDate) && !isNaN(rowDate) 
-                            && filterDate.getTime() === rowDate.getTime());
-                    } 
-                    else if(['campaign_progress', 'subcampaignsCount'].includes(key)) {
+                        visible = visible && (!isNaN(filterDate) && !isNaN(rowDate) &&
+                            filterDate.getTime() === rowDate.getTime());
+                    } else if (['campaign_progress', 'subcampaignsCount'].includes(key)) {
                         visible = visible && (parseFloat(data[key] || 0) >= parseFloat(value));
-                    } 
-                    else {
+                    } else {
                         visible = visible && dataValue.includes(value.toLowerCase());
                     }
                 }
             });
 
             // Filtrowanie globalne
-            if(globalFilter) {
+            if (globalFilter) {
                 const searchValues = [
                     data.campaign_name,
                     data.orderNumbers,
@@ -659,7 +666,7 @@ class CampaignTable {
                     data.subcampaignsCount,
                     data.status
                 ].join(' ').toLowerCase();
-                
+
                 visible = visible && searchValues.includes(globalFilter);
             }
 
@@ -668,10 +675,10 @@ class CampaignTable {
     }
 
     setupPagination() {
-        const pagination = document.getElementById(this.paginationId );
-        if(pagination) pagination.addEventListener('click', (e) => {
+        const pagination = document.getElementById(this.paginationId);
+        if (pagination) pagination.addEventListener('click', (e) => {
             const pageItem = e.target.closest('.page-item');
-            if(pageItem) {
+            if (pageItem) {
                 this.currentPage = parseInt(pageItem.dataset.page);
                 this.updateTable();
             }
@@ -708,15 +715,15 @@ class CampaignTable {
         const pagination = this.table.parentElement.querySelector('.pagination');
         const totalPages = Math.ceil(totalVisible / this.itemsPerPage);
 
-        if(paginationInfo) {
+        if (paginationInfo) {
             const start = totalVisible === 0 ? 0 : (this.currentPage - 1) * this.itemsPerPage + 1;
             const end = Math.min(this.currentPage * this.itemsPerPage, totalVisible);
             paginationInfo.textContent = `Showing ${start}-${end} of ${totalVisible} records`;
         }
 
-        if(pagination) {
+        if (pagination) {
             pagination.innerHTML = '';
-            for(let i = 1; i <= totalPages; i++) {
+            for (let i = 1; i <= totalPages; i++) {
                 pagination.innerHTML += `
                     <li class="page-item ${i === this.currentPage ? 'active' : ''}" data-page="${i}">
                         <a class="page-link">${i}</a>
@@ -729,10 +736,10 @@ class CampaignTable {
     initExpandable() {
         this.table.addEventListener('click', (e) => {
             const mainRow = e.target.closest('.main-row');
-            if(mainRow) {
+            if (mainRow) {
                 const expandableRow = mainRow.nextElementSibling;
                 const isExpanded = expandableRow.style.display === 'none';
-                    
+
                 expandableRow.style.display = isExpanded ? '' : 'none';
                 mainRow.querySelector('.icon-campaigne').classList.toggle('fa-folder-plus', !isExpanded);
                 mainRow.querySelector('.icon-campaigne').classList.toggle('fa-folder-open', isExpanded);
@@ -760,7 +767,7 @@ class CampaignTable {
     updateSortIndicators() {
         this.table.querySelectorAll('.sortable').forEach(header => {
             const indicator = header.querySelector('.sort-indicator');
-            if(header.dataset.sortKey === this.currentSort.key) {
+            if (header.dataset.sortKey === this.currentSort.key) {
                 indicator.innerHTML = this.currentSort.direction === 'asc' ? ' ↑' : ' ↓';
             } else {
                 indicator.innerHTML = '';
@@ -771,7 +778,18 @@ class CampaignTable {
 
 // Inicjalizacja tabeli
 document.addEventListener('DOMContentLoaded', () => {
-    new CampaignTable('activeCampaignsTable');
-    new CampaignTable('completedCampaignsTable');
+    const tables = [
+        'activeCampaignsTable',
+        'completedCampaignsTable'
+    ];
+
+    tables.forEach(tableId => {
+        const element = document.getElementById(tableId);
+        if (element) {
+            new CampaignTable(tableId);
+        } else {
+            console.warn(`Element #${tableId} nie istnieje`);
+        }
+    });
 });
 </script>
