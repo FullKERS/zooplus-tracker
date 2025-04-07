@@ -17,7 +17,7 @@ class CampaignController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->get('search');
-        $perPage = 25;
+        $perPage = 10;
 
         if (!empty($keyword)) {
             $campaigns = Campaign::where('campaign_name', 'LIKE', "%$keyword%")

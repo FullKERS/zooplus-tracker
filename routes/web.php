@@ -42,8 +42,15 @@ Route::middleware(['check.auth', 'is.admin'])->prefix('admin')->as('admin.')->gr
     Route::resource('local-users', 'App\\Http\\Controllers\\Admin\\LocalUserController');
     Route::resource('admins', 'App\Http\Controllers\Admin\AdminController')->except(['show', 'edit', 'update']);
     Route::resource('campaigns', 'App\\Http\\Controllers\\Admin\\CampaignController');
-    Route::resource('subcampaigns', 'App\\Http\\Controllers\\Admin\\SubcampaignController');
-    Route::get('subcampaigns/create/{campaign_id}', [SubcampaignController::class, 'create'])->name('admin.subcampaigns.create');
+    //Route::resource('subcampaigns', 'App\\Http\\Controllers\\Admin\\SubcampaignController');
+    //Route::get('subcampaigns/create/{campaign_id}', [SubcampaignController::class, 'create'])->name('admin.subcampaigns.create');
+    Route::prefix('/campaigns/{campaign}')->group(function () {
+        Route::get('/subcampaigns', [SubcampaignController::class, 'manage'])
+            ->name('subcampaigns.manage');
+            
+        Route::post('/subcampaigns', [SubcampaignController::class, 'save'])
+            ->name('subcampaigns.save');
+    });
     Route::resource('countries', 'App\\Http\\Controllers\\Admin\\CountryController');
     Route::resource('statuses', 'App\Http\Controllers\Admin\StatusController');  
 });

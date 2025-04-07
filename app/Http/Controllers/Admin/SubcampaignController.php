@@ -3,198 +3,100 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
-use App\Models\Subcampaign;
-use App\Models\Campaign;
-use App\Models\Country;
-use App\Models\Status;
+use App\Models\{Campaign, Subcampaign, Country, Status, SubcampaignStatus};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SubcampaignController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index(Request $request)
+    public function manage(Campaign $campaign)
     {
-        $keyword = $request->get('search');
-        $perPage = 25;
-
-        if (!empty($keyword)) {
-            $subcampaigns = Subcampaign::where('subcampaign_name', 'LIKE', "%$keyword%")
-                ->orWhere('order_number', 'LIKE', "%$keyword%")
-                ->orWhere('quantity', 'LIKE', "%$keyword%")
-                ->orWhere('status', 'LIKE', "%$keyword%")
-                ->orWhere('campaign_id', 'LIKE', "%$keyword%")
-                ->latest()->paginate($perPage);
-        } else {
-            $subcampaigns = Subcampaign::latest()->paginate($perPage);
-        }
-
-        return view('adminSubcampaigns.subcampaigns.index', compact('subcampaigns'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create($campaign_id)
-    {
-        $campaign = \App\Models\Campaign::find($campaign_id);
-        $countries = Country::all();  // Pobranie wszystkich krajów
+        $campaign->load(['subcampaigns.statuses.status']);
+        $countries = Country::all();
         $statuses = Status::all();
-    
-        return view('adminSubcampaigns.subcampaigns.create', compact('campaign_id', 'campaign', 'countries', 'statuses'));
+
+        return view('adminSubcampaigns.subcampaigns.menage', compact(
+            'campaign',
+            'countries',
+            'statuses'
+        ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function store(Request $request)
+    public function save(Request $request, Campaign $campaign)
     {
         $validated = $request->validate([
+            'subcampaigns' => 'required|array',
+            'subcampaigns.*.id' => 'nullable|exists:subcampaigns,id,campaign_id,'.$campaign->id,
             'subcampaigns.*.subcampaign_name' => 'required|string|max:255',
             'subcampaigns.*.country_id' => 'required|exists:countries,id',
             'subcampaigns.*.order_number' => 'nullable|string|max:255',
             'subcampaigns.*.quantity' => 'nullable|integer|min:0',
-            'subcampaigns.*.statuses' => 'sometimes|array',
-            'subcampaigns.*.statuses.*.status_id' => 'required_with:subcampaigns.*.statuses|exists:statuses,id',
-            'subcampaigns.*.statuses.*.status_date' => 'required_with:subcampaigns.*.statuses|date'
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            foreach ($request->subcampaigns as $subcampaignData) {
-                $subcampaign = Subcampaign::create([
-                    'campaign_id' => $request->campaign_id,
-                    'subcampaign_name' => $subcampaignData['subcampaign_name'],
-                    'country_id' => $subcampaignData['country_id'],
-                    'order_number' => $subcampaignData['order_number'] ?? null,
-                    'quantity' => $subcampaignData['quantity'] ?? null
-                ]);
-
-                if (!empty($subcampaignData['statuses'])) {
-                    foreach ($subcampaignData['statuses'] as $statusData) {
-                        $subcampaign->statuses()->create([
-                            'status_id' => $statusData['status_id'],
-                            'status_date' => $statusData['status_date'],
-                            'is_visible' => isset($statusData['is_visible']),
-                            'is_assigned' => isset($statusData['is_assigned'])
-                        ]);
+            'subcampaigns.*.statuses' => 'required|array',
+            'subcampaigns.*.statuses.*.id' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($campaign) {
+                    if ($value && !SubcampaignStatus::where('id', $value)
+                        ->whereHas('subcampaign', fn($q) => $q->where('campaign_id', $campaign->id))
+                        ->exists()) {
+                        $fail('Nieprawidłowy status dla podkampanii');
                     }
-                }
-            }
-
-            DB::commit();
-
-            return redirect()->to('/admin/campaigns/'.$request->campaign_id)
-                ->with('flash_message', 'Subcampaigns added!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withInput()->withErrors(['error' => 'Error saving data: '.$e->getMessage()]);
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\View\View
-     */
-    public function show($id)
-    {
-        $subcampaign = Subcampaign::findOrFail($id);
-
-        return view('adminSubcampaigns.subcampaigns.show', compact('subcampaign'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\View\View
-     */
-    public function edit($id)
-    {
-        $subcampaign = Subcampaign::findOrFail($id);
-        $countries = Country::all();  // Pobranie wszystkich krajów
-        $campaigns = Campaign::all();
-        $statuses = Status::all();
-
-        return view('adminSubcampaigns.subcampaigns.edit', compact('subcampaign', 'countries', 'campaigns', 'statuses'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function update(Request $request, $id)
-    {
-        $requestData = $request->all();
-
-        // Znajdź subkampanię
-        $subcampaign = Subcampaign::findOrFail($id);
-
-        // Zaktualizuj dane subkampanii
-        $subcampaign->update([
-            'subcampaign_name' => $requestData['subcampaigns'][0]['subcampaign_name'],
-            'order_number' => $requestData['subcampaigns'][0]['order_number'],
-            'quantity' => $requestData['subcampaigns'][0]['quantity'],
-            'status' => $requestData['subcampaigns'][0]['status'],
-            'campaign_id' => $requestData['campaign_id'],
-            'country_id' => $requestData['subcampaigns'][0]['country_id'],
+                },
+            ],
+            'subcampaigns.*.statuses.*.status_id' => 'required|exists:statuses,id',
+            'subcampaigns.*.statuses.*.status_date' => 'required|date',
+            'deleted_subcampaigns' => 'sometimes|array',
+            'deleted_subcampaigns.*' => 'exists:subcampaigns,id,campaign_id,'.$campaign->id
         ]);
 
-        // **Obsługa statusów**
-        // Usuń stare statusy i dodaj nowe
-        $subcampaign->statuses()->delete();
-
-        if (isset($requestData['statuses'])) {
-            foreach ($requestData['statuses'] as $status) {
-                $subcampaign->statuses()->create([
-                    'status_id' => $status['status_id'],
-                    'status_date' => $status['status_date'],
-                    'is_visible' => isset($status['is_visible']) ? 1 : 0,
-                    'is_assigned' => isset($status['is_assigned']) ? 1 : 0,
-                ]);
+        return DB::transaction(function () use ($campaign, $validated) {
+            // Usuń oznaczone do usunięcia
+            if (!empty($validated['deleted_subcampaigns'])) {
+                Subcampaign::whereIn('id', $validated['deleted_subcampaigns'])->delete();
             }
-        }
 
-        return redirect('admin/campaigns/' . $subcampaign->campaign->id)
-            ->with('flash_message', 'Subcampaign updated!');
+            foreach ($validated['subcampaigns'] as $subcampaignData) {
+                $subcampaign = $this->updateOrCreateSubcampaign($campaign, $subcampaignData);
+                $this->syncStatuses($subcampaign, $subcampaignData['statuses']);
+            }
+
+            return redirect()->back()->with('success', 'Zmiany zostały zapisane');
+        });
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-    public function destroy($id)
+    private function updateOrCreateSubcampaign(Campaign $campaign, array $data): Subcampaign
     {
+        return Subcampaign::updateOrCreate(
+            ['id' => $data['id'] ?? null],
+            [
+                'campaign_id' => $campaign->id,
+                'subcampaign_name' => $data['subcampaign_name'],
+                'country_id' => $data['country_id'],
+                'order_number' => $data['order_number'],
+                'quantity' => $data['quantity']
+            ]
+        );
+    }
 
-        $subcampaign = Subcampaign::findOrFail($id);
+    private function syncStatuses(Subcampaign $subcampaign, array $statuses): void
+    {
+        $existingStatusIds = [];
         
-        $campaignId = $subcampaign->campaign_id;
+        foreach ($statuses as $statusData) {
+            $status = $subcampaign->statuses()->updateOrCreate(
+                ['id' => $statusData['id'] ?? null], // Szukaj po ID jeśli istnieje
+                [
+                    'status_id' => $statusData['status_id'],
+                    'status_date' => $statusData['status_date'],
+                    'is_visible' => $statusData['is_visible'] ?? false,
+                    'is_assigned' => $statusData['is_assigned'] ?? false
+                ]
+            );
+            
+            $existingStatusIds[] = $status->id;
+        }
 
-        $subcampaign->delete();
-
-        return redirect('admin/campaigns/'.$subcampaign->campaign->id)->with('flash_message', 'Subcampaign deleted!');
+        $subcampaign->statuses()
+            ->whereNotIn('id', $existingStatusIds)
+            ->delete();
     }
 }
