@@ -37,7 +37,7 @@
                         <span class="sort-indicator"></span>
                     </th>
                     <th class="td-center sortable" data-sort-key="date_admission">
-                        <i class="fa-solid fa-calendar-days"></i> Date of admission
+                        <i class="fa-solid fa-calendar-days"></i> Order date
                         <span class="sort-indicator"></span>
                     </th>
                     <th class="td-center sortable" data-sort-key="end_date">
@@ -195,17 +195,20 @@
                                                 $statusDate = \Carbon\Carbon::parse($status->status_date);
                                                 $isPast = $statusDate->isPast();
                                                 @endphp
+                                                @if($status->status->status_name != 'Order Received')
 
-                                                <div class="status-box {{ $isPast ? '' : 'expected' }}"
-                                                    data-toggle="tooltip" data-placement="top"
-                                                    title="{{ $status->status->status_description }}">
-                                                    <h4>{{ $status->status->status_name }}</h4>
-                                                    <p>{{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: '.$statusDate->format('Y-m-d')  }}
-                                                    </p>
-                                                </div>
+                                                    <div class="status-box {{ $isPast ? '' : 'expected' }}"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="{{ $status->status->status_description }}">
+                                                        <h4>{{ $status->status->status_name }}</h4>
+                                                        <p>{{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: '.$statusDate->format('Y-m-d')  }}
+                                                        </p>
+                                                    </div>
+                                                    
+                                                    @if (!$loop->last)
+                                                    <span class="arrow">→</span>
+                                                    @endif
 
-                                                @if (!$loop->last)
-                                                <span class="arrow">→</span>
                                                 @endif
                                                 @endforeach
                                             </div>
@@ -278,7 +281,7 @@
                         <span class="sort-indicator"></span>
                     </th>
                     <th class="td-center sortable" data-sort-key="date_admission">
-                        <i class="fa-solid fa-calendar-days"></i> Date of admission
+                        <i class="fa-solid fa-calendar-days"></i> Order date
                         <span class="sort-indicator"></span>
                     </th>
                     <th class="td-center sortable" data-sort-key="end_date">
@@ -437,6 +440,8 @@
                                                 $isPast = $statusDate->isPast();
                                                 @endphp
 
+                                                @if($status->status->status_name != 'Order Received')
+
                                                 <div class="status-box {{ $isPast ? '' : 'expected' }}"
                                                     data-toggle="tooltip" data-placement="top"
                                                     title="{{ $status->status->status_description }}">
@@ -447,6 +452,8 @@
 
                                                 @if (!$loop->last)
                                                 <span class="arrow">→</span>
+                                                @endif
+
                                                 @endif
                                                 @endforeach
                                             </div>
