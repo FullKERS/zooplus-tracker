@@ -400,3 +400,13 @@ table th{
 .table-countries img {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
+.custom-switch .custom-control-label::before {
+    cursor: pointer;
+}
+.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #28a745;
+}
+.table-actions {
+    min-width: 120px;
+}

@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'web-local',
         'passwords' => 'users',
     ],
 
@@ -36,9 +36,13 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        'web-seeddms' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'seeddms-users',
+        ],
+        'web-local' => [
+            'driver' => 'session',
+            'provider' => 'local-users',
         ],
     ],
 
@@ -60,15 +64,14 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'seeddms-users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'local-users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\LocalUser::class,
+        ],
     ],
 
     /*

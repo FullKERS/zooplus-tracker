@@ -331,6 +331,12 @@ return [
             'url' => 'admin/statuses',
             'icon' => 'fas fa-fw fa-user',
         ],
+        ['header' => 'Uytkownicy'],
+        [
+            'text' => 'Lokalni uytkownicy',
+            'url' => 'admin/local-users',
+            'icon' => 'fas fa-fw fa-user',
+        ],
         /*[
             'text' => 'blog',
             'url' => 'admin/blog',

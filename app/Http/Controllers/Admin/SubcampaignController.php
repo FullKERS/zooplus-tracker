@@ -45,8 +45,9 @@ class SubcampaignController extends Controller
     {
         $campaign = \App\Models\Campaign::find($campaign_id);
         $countries = Country::all();  // Pobranie wszystkich krajów
+        $statuses = Status::all();
     
-        return view('adminSubcampaigns.subcampaigns.create', compact('campaign_id', 'campaign', 'countries'));
+        return view('adminSubcampaigns.subcampaigns.create', compact('campaign_id', 'campaign', 'countries', 'statuses'));
     }
 
     /**
@@ -58,33 +59,49 @@ class SubcampaignController extends Controller
      */
     public function store(Request $request)
     {
-        /*
-        $requestData = $request->all();
-        
-        Subcampaign::create($requestData);
+        $validated = $request->validate([
+            'subcampaigns.*.subcampaign_name' => 'required|string|max:255',
+            'subcampaigns.*.country_id' => 'required|exists:countries,id',
+            'subcampaigns.*.order_number' => 'nullable|string|max:255',
+            'subcampaigns.*.quantity' => 'nullable|integer|min:0',
+            'subcampaigns.*.statuses' => 'sometimes|array',
+            'subcampaigns.*.statuses.*.status_id' => 'required_with:subcampaigns.*.statuses|exists:statuses,id',
+            'subcampaigns.*.statuses.*.status_date' => 'required_with:subcampaigns.*.statuses|date'
+        ]);
 
-        return redirect()->route('admin.campaigns.show', $request->campaign_id)->with('flash_message', 'Subcampaign added!');*/
-        
-            // Pobieramy wszystkie dane subkampanii
-            $subcampaigns = $request->input('subcampaigns');
+        try {
+            DB::beginTransaction();
 
-            // Walidacja danych (opcjonalnie)
-            $validated = $request->validate([
-                'subcampaigns.*.subcampaign_name' => 'required|string',
-                //'subcampaigns.*.order_number' => 'required|string',
-                //'subcampaigns.*.quantity' => 'required|integer',
-                //'subcampaigns.*.status' => 'required|string',
-            ]);
-        
-            foreach ($subcampaigns as $subcampaignData) {
-                $subcampaignData['campaign_id'] = $request->campaign_id; // Ustawienie campaign_id
+            foreach ($request->subcampaigns as $subcampaignData) {
+                $subcampaign = Subcampaign::create([
+                    'campaign_id' => $request->campaign_id,
+                    'subcampaign_name' => $subcampaignData['subcampaign_name'],
+                    'country_id' => $subcampaignData['country_id'],
+                    'order_number' => $subcampaignData['order_number'] ?? null,
+                    'quantity' => $subcampaignData['quantity'] ?? null
+                ]);
 
-                // Tworzenie subkampanii
-                Subcampaign::create($subcampaignData);
+                if (!empty($subcampaignData['statuses'])) {
+                    foreach ($subcampaignData['statuses'] as $statusData) {
+                        $subcampaign->statuses()->create([
+                            'status_id' => $statusData['status_id'],
+                            'status_date' => $statusData['status_date'],
+                            'is_visible' => isset($statusData['is_visible']),
+                            'is_assigned' => isset($statusData['is_assigned'])
+                        ]);
+                    }
+                }
             }
-        
-            // Przekierowanie na stronę kampanii z przekazanym campaign_id
-            return redirect()->to('/admin/campaigns/'.$request->campaign_id)->with('flash_message', 'Subcampaigns added!');
+
+            DB::commit();
+
+            return redirect()->to('/admin/campaigns/'.$request->campaign_id)
+                ->with('flash_message', 'Subcampaigns added!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->withErrors(['error' => 'Error saving data: '.$e->getMessage()]);
+        }
     }
 
     /**
