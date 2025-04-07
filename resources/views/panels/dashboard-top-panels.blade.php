@@ -16,7 +16,7 @@
                     <!-- ./col -->
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
-                        <div class="small-box bg-success">
+                        <div class="small-box bg-warning">
                             <div class="inner">
                                 <h3>{{ App\Models\Statistic::openProjects() }}</h3>
 
@@ -31,7 +31,7 @@
                     <!-- ./col -->
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
-                        <div class="small-box bg-warning">
+                        <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>{{ App\Models\Statistic::completedProjects() }}</h3>
 
