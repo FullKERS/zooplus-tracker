@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Session::class, 'userID', 'id');
     }
+
+    public function calendarEntries()
+    {
+        return $this->hasMany(\App\Models\CalendarEntry::class);
+    }
 }

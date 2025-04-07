@@ -8,6 +8,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LocalAuthController;
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\SubcampaignController;
+use App\Http\Controllers\CalendarEntryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,8 @@ Route::post('/local-login', [LocalAuthController::class, 'login'])->name('local.
 Route::middleware(['check.auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::post('/logout', [DashboardController::class, 'logout']);
+    Route::resource('calendar-entries', CalendarEntryController::class)->except(['show']);
+    Route::get('/calendar-entries/by-date/{date}', [CalendarEntryController::class, 'getByDate'])->name('calendar-entries.by-date');
 });
 
 //Dostep admin

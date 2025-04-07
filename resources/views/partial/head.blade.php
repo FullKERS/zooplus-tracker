@@ -1,6 +1,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @unless(isset($exclude_csrf_meta))
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+    @endunless
     <link rel="search" type="application/opensearchdescription+xml"
         href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.OpensearchDesc.php" title="SeedDMS" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">

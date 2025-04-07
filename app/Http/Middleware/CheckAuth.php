@@ -9,12 +9,18 @@ class CheckAuth
 {
     public function handle(Request $request, Closure $next)
     {
-        // Sprawdź autentykację SeedDMS
+        // SeedDMS auth
         if ($this->checkSeedDmsAuth($request)) {
+            /** @var \App\Models\User $user */
+            $user = $request->authenticated_user;
+            
+            // Ustaw użytkownika w systemie Auth
+            Auth::setUser($user);
+            
             return $next($request);
         }
 
-        // Sprawdź autentykację lokalną
+        // Local auth
         if (Auth::guard('web-local')->check()) {
             return $next($request);
         }
@@ -27,8 +33,13 @@ class CheckAuth
         $sessionId = session('idSesji');
         if (!$sessionId) return false;
 
-        $session = \App\Models\Session::find($sessionId);
+        $session = \App\Models\Session::with('user')->find($sessionId);
         if (!$session || !$session->user) return false;
+
+        // Zweryfikuj relację
+        if (!method_exists($session->user, 'calendarEntries')) {
+            throw new \RuntimeException('User model missing calendarEntries relationship');
+        }
 
         $request->merge(['authenticated_user' => $session->user]);
         return true;
