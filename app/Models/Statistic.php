@@ -13,15 +13,15 @@ class Statistic extends Model
      */
     public static function projectsTotal(): int
     {
-        return Subcampaign::count();
+        return Campaign::has('subcampaigns')->count();
     }
 
     /**
-     * Liczba aktywnych subkampanii (Estimated delivery time w przyszłości)
+     * Liczba aktywnych kampanii (z przynajmniej jedną subkampanią z Estimated delivery time w przyszłości)
      */
     public static function openProjects(): int
     {
-        return Subcampaign::whereHas('statuses', function($query) {
+        return Campaign::whereHas('subcampaigns.statuses', function($query) {
             $query->whereHas('status', function($q) {
                 $q->where('status_name', 'Estimated delivery time')
                   ->whereDate('status_date', '>', Carbon::now());
@@ -30,17 +30,18 @@ class Statistic extends Model
     }
 
     /**
-     * Liczba zakończonych subkampanii (Estimated delivery time w przeszłości)
+     * Liczba zakończonych kampanii (z przynajmniej jedną subkampanią z Estimated delivery time w przeszłości)
      */
     public static function completedProjects(): int
     {
-        return Subcampaign::whereHas('statuses', function($query) {
+        return Campaign::whereHas('subcampaigns.statuses', function($query) {
             $query->whereHas('status', function($q) {
                 $q->where('status_name', 'Estimated delivery time')
                   ->whereDate('status_date', '<=', Carbon::now());
             });
         })->count();
     }
+
 
     /**
      * Łączna ilość wysłanych produktów
