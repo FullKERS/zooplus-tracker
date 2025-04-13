@@ -169,7 +169,7 @@
                                         @elseif ($deliveryStatus && $deliveryStatus->status_date)
                                         <div class="delivery-wrapper">
                                             {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
-                                            <span class="tbc-badge">TBC</span>
+                                            
                                         </div>
                                         @else
                                             <span class="tbc-badge">TBC</span>
@@ -424,7 +424,7 @@
                                         @elseif ($deliveryStatus && $deliveryStatus->status_date)
                                         <div class="delivery-wrapper">
                                             {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
-                                            <span class="tbc-badge">TBC</span>
+                                            
                                         </div>
                                         @else
                                             <span class="tbc-badge">TBC</span>
