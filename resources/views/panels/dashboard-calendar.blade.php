@@ -109,10 +109,11 @@ $(document).ready(function() {
 
     // Date click handler
     calendar.on('changeDate', function(e) {
-        const date = e.date.toISOString().split('T')[0];
+        const date = e.date.toLocaleDateString('sv-SE');
         $('#entryDate').val(date);
         loadDateEvents(date);
         $('#eventModal').modal('show');
+        updateCalendarStyles();
         startAutoRefresh();
     });
 
@@ -267,14 +268,113 @@ $(document).ready(function() {
 </script>
 
 <style>
-.datepicker td {
+/* ==========================================================================
+   [1] OGÓLNE USTAWIENIA DATEPICKERA
+   ========================================================================== */
+   .datepicker td {
     transition: all 0.15s ease-out;
 }
 
+
+/* ==========================================================================
+   [2] WYDARZENIA: stylowanie dni z wydarzeniami
+   ========================================================================== */
 .datepicker td.has-event {
-    will-change: transform, background-color;
+    position: relative;
+    background: #f0f8ff; /* łagodny niebieski */
+    border: 1px solid #91c6f9 !important;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
 }
 
+.datepicker td.has-event:hover {
+    background: #e0f0ff;
+}
+
+.datepicker td.has-event .day {
+    font-weight: bold;
+    color: #0d47a1;
+}
+
+.datepicker td.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 6px;
+    height: 6px;
+    background: #2196F3;
+    border-radius: 50%;
+}
+
+.datepicker td.has-event:hover::after {
+    background: #0d47a1;
+}
+
+
+/* ==========================================================================
+   [3] DZIEŃ DZISIEJSZY
+   ========================================================================== */
+.datepicker td.today {
+    background-color: #fffbe6 !important;
+    border: 1px solid #ffe58f !important;
+    font-weight: bold;
+}
+
+
+/* ==========================================================================
+   [4] AKTYWNY DZIEŃ (kliknięty)
+   ========================================================================== */
+.datepicker td.active,
+.datepicker td.active:hover,
+.datepicker td.active:focus,
+.datepicker td.day.active,
+.datepicker td .day.active,
+.datepicker td.active .day,
+.datepicker td .active.day {
+    background-color: #d0ebff !important;  /* Jasnoniebieski */
+    border: 1px solid #74c0fc !important;
+    color: #003366 !important;
+    font-weight: 600 !important;
+    box-shadow: inset 0 0 0 1px #91c6f9;
+    border-radius: 6px;
+}
+
+/* Aktywny dzień z wydarzeniem */
+.datepicker td.has-event.active,
+.datepicker td.has-event .day.active {
+    background-color: #b8e0f9 !important;
+    border-color: #74c0fc !important;
+}
+
+/* Aktywny dzień, jeśli to dziś */
+.datepicker td.today.active,
+.datepicker td.today .day.active {
+    background-color: #fff4d3 !important;
+    border: 1px solid #fbd38d !important;
+    color: #614700 !important;
+    font-weight: 700 !important;
+}
+
+.datepicker table tr td.active.day,
+.datepicker td.active.day,
+.datepicker .table-condensed td.active.day,
+.datepicker .datepicker-days td.active.day,
+.datepicker table tr td.active,
+.datepicker td.active,
+.datepicker table tr td.active {
+    background-color: #d0ebff !important;
+    border: 1px solid #74c0fc !important;
+    color: #003366 !important;
+    font-weight: 600 !important;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px #91c6f9 !important;
+}
+
+
+/* ==========================================================================
+   [5] NADCHODZĄCE WYDARZENIA – lista po prawej
+   ========================================================================== */
 .upcoming-event-item {
     padding: 0.5rem 1rem;
     margin-bottom: 0.5rem;
@@ -315,33 +415,5 @@ $(document).ready(function() {
     padding: 0.25rem 0.4rem;
     font-size: 0.8rem;
     margin-left: 0.5rem;
-}
-
-
-.datepicker td.has-event {
-    position: relative;
-    background: #e3f2fd;
-    border: 2px solid #2196F3 !important;
-    border-radius: 4px;
-}
-
-.datepicker td.has-event .day {
-    font-weight: bold;
-    color: #0d47a1;
-}
-
-.datepicker td.has-event:after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 6px;
-    height: 6px;
-    background: #2196F3;
-    border-radius: 50%;
-}
-
-.datepicker td.has-event:hover:after {
-    background: #0d47a1;
 }
 </style>
