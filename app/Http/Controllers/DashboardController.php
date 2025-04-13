@@ -23,13 +23,21 @@ class DashboardController extends Controller
             'completed_projects' => Statistic::completedProjects(),
             'total_quantity' => Statistic::totalQuantityShipped()
         ];
+
+        $campaignes->each(function ($campaign) {
+            $campaign->subcampaigns->each(function ($subcampaign) {
+                $subcampaign->statuses = $subcampaign->statuses->sortBy(function ($subStatus) {
+                    return $subStatus->status->order ?? PHP_INT_MAX;
+                })->values(); // resetuj klucze, żeby były od zera
+            });
+        });
     
 
         // Podział na aktywne/zakończone
         $activeCampaigns = $campaignes->filter(function($campaign) {
             return $campaign->subcampaigns->contains(function($subcampaign) {
                 return $subcampaign->statuses->contains(function($status) {
-                    return $status->status->status_name === 'Estimated delivery time' 
+                    return $status->status->function_flag === 'DORECZENIE' 
                         && Carbon::parse($status->status_date)->isFuture();
                 });
             });

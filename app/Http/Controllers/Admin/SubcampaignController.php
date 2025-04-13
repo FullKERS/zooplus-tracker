@@ -13,7 +13,7 @@ class SubcampaignController extends Controller
     {
         $campaign->load(['subcampaigns.statuses.status']);
         $countries = Country::all();
-        $statuses = Status::all();
+        $statuses = Status::orderBy('order', 'asc')->get();
 
         return view('adminSubcampaigns.subcampaigns.menage', compact(
             'campaign',
@@ -43,7 +43,7 @@ class SubcampaignController extends Controller
                 },
             ],
             'subcampaigns.*.statuses.*.status_id' => 'required|exists:statuses,id',
-            'subcampaigns.*.statuses.*.status_date' => 'required|date',
+            'subcampaigns.*.statuses.*.status_date' => 'nullable|date',
             'deleted_subcampaigns' => 'sometimes|array',
             'deleted_subcampaigns.*' => 'exists:subcampaigns,id,campaign_id,'.$campaign->id
         ]);

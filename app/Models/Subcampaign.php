@@ -42,12 +42,21 @@ class Subcampaign extends Model
         return $this->hasMany(SubcampaignStatus::class, 'subcampaign_id');
     }
 
+    /*public function statuses()
+{
+    return $this->hasMany(SubcampaignStatus::class, 'subcampaign_id')
+                ->join('statuses', 'subcampaign_statuses.status_id', '=', 'statuses.id')
+                ->orderBy('statuses.order')
+                ->select('subcampaign_statuses.*'); // konieczne, żeby uniknąć konfliktów pól
+}*/
+
+
     public function getStatusTxtAttribute(): string
     {
         // Pobranie statusu 'Estimated delivery time', jeśli istnieje
         $distributionStatus = $this->statuses()
             ->whereHas('status', function ($query) {
-                $query->where('status_name', 'Estimated delivery time');
+                $query->where('function_flag', 'DORECZENIE');
             })
             ->orderByDesc('status_date')
             ->first();

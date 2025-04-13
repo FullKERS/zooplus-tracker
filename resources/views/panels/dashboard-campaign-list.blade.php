@@ -156,28 +156,21 @@
                                     <td class="td-center">{{ number_format($subcampaign->quantity, 0, ',', ' ') }} pcs.
                                     </td>
                                     <td class="td-center">
-                                        @php
-                                        /*$deliveryStatus = $subcampaign->statuses->firstWhere('status.status_name',
-                                        'Estimated delivery time');
-                                        $deliveryDate = $deliveryStatus ?
-                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') : 'TBC';*/
-                                        $deliveryStatus = $subcampaign->statuses->firstWhere('status.status_name',
-                                        'Estimated delivery time');
-                                        $shipmentDispatch = $subcampaign->statuses->firstWhere('status.status_name',
-                                        'Shipment dispatch');
+    @php
+        $deliveryStatus = $subcampaign->statuses->firstWhere('status.function_flag', 'DORECZENIE'); /*DORECZONE DO KONCOWEGO KLIENTA*/
+    @endphp
 
-                                        if ($deliveryStatus &&
-                                        (\Carbon\Carbon::parse($deliveryStatus->status_date)->isPast() ||
-                                        $shipmentDispatch)) {
-                                        $deliveryDate =
-                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d');
-                                        } else {
-                                        $deliveryDate = 'TBC';
-                                        }
-                                        @endphp
-
-                                        {{ $deliveryDate }}
-                                    </td>
+    @if ($deliveryStatus && \Carbon\Carbon::parse($deliveryStatus->status_date)->isPast())
+        {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
+    @elseif ($deliveryStatus && $deliveryStatus->status_date)
+        <div class="delivery-wrapper">
+            {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
+            <span class="tbc-badge">TBC</span>
+        </div>
+    @else
+        TBC
+    @endif
+</td>
                                     <td class="td-center">
                                         <span
                                             class="badge {{ $subcampaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
@@ -192,27 +185,32 @@
 
 
                                             <div class="timeline-box">
-                                                @foreach ($subcampaign->statuses as $index => $status)
+                                            @foreach ($subcampaign->statuses as $index => $status)
                                                 @php
-                                                $statusDate = \Carbon\Carbon::parse($status->status_date);
-                                                $isPast = $statusDate->isPast();
+                                                    $statusDateRaw = $status->status_date;
+                                                    $statusDate = $statusDateRaw ? \Carbon\Carbon::parse($statusDateRaw) : null;
+                                                    $isPast = $statusDate ? $statusDate->isPast() : false;
                                                 @endphp
-                                                @if($status->status->status_name != 'Order Received')
 
-                                                <div class="status-box {{ $isPast ? '' : 'expected' }}"
-                                                    data-toggle="tooltip" data-placement="top"
-                                                    title="{{ $status->status->status_description }}">
-                                                    <h4>{{ $status->status->status_name }}</h4>
-                                                    <p>{{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: '.$statusDate->format('Y-m-d')  }}
-                                                    </p>
-                                                </div>
+                                                @if($status->status->function_flag != 'OTRZYMANIE_ZAMOWIENIA')
+                                                    <div class="status-box {{ !$statusDate || !$isPast ? 'expected' : '' }}"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="{{ $status->status->status_description }}">
+                                                        <h4>{{ $status->status->status_name }}</h4>
+                                                        <p>
+                                                            @if ($statusDate)
+                                                                {{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: ' . $statusDate->format('Y-m-d') }}
+                                                            @else
+                                                                TBC
+                                                            @endif
+                                                        </p>
+                                                    </div>
 
-                                                @if (!$loop->last)
-                                                <span class="arrow">→</span>
+                                                    @if (!$loop->last)
+                                                        <span class="arrow">→</span>
+                                                    @endif
                                                 @endif
-
-                                                @endif
-                                                @endforeach
+                                            @endforeach
                                             </div>
 
                                             <script>
@@ -403,22 +401,25 @@
                                     </td>
                                     <td class="td-center">
                                         @php
-                                        /*$deliveryStatus = $subcampaign->statuses->firstWhere('status.status_name',
-                                        'Estimated delivery time');
-                                        $deliveryDate = $deliveryStatus ?
-                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') : 'TBC';*/
-                                        $deliveryStatus = $subcampaign->statuses->firstWhere('status.status_name',
-                                        'Estimated delivery time');
-                                        $shipmentDispatch = $subcampaign->statuses->firstWhere('status.status_name',
-                                        'Shipment dispatch');
+
+                                        $deliveryStatus = $subcampaign->statuses->firstWhere('status.function_flag',
+                                        'DORECZENIE'); /*DORECZONE DO KONCOWEGO KLIENTA*/
+
 
                                         if ($deliveryStatus &&
-                                        (\Carbon\Carbon::parse($deliveryStatus->status_date)->isPast() ||
-                                        $shipmentDispatch)) {
+                                        (\Carbon\Carbon::parse($deliveryStatus->status_date)->isPast())) {
                                         $deliveryDate =
                                         \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d');
                                         } else {
+                                        if($deliveryStatus){
+                                        $deliveryDate =
+                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d').' -
+                                        '.'TBC';
+                                        }
+                                        else{
                                         $deliveryDate = 'TBC';
+                                        }
+
                                         }
                                         @endphp
 
@@ -438,28 +439,32 @@
 
 
                                             <div class="timeline-box">
-                                                @foreach ($subcampaign->statuses as $index => $status)
+                                            @foreach ($subcampaign->statuses as $index => $status)
                                                 @php
-                                                $statusDate = \Carbon\Carbon::parse($status->status_date);
-                                                $isPast = $statusDate->isPast();
+                                                    $statusDateRaw = $status->status_date;
+                                                    $statusDate = $statusDateRaw ? \Carbon\Carbon::parse($statusDateRaw) : null;
+                                                    $isPast = $statusDate ? $statusDate->isPast() : false;
                                                 @endphp
 
-                                                @if($status->status->status_name != 'Order Received')
+                                                @if($status->status->function_flag != 'OTRZYMANIE_ZAMOWIENIA')
+                                                    <div class="status-box {{ !$statusDate || !$isPast ? 'expected' : '' }}"
+                                                        data-toggle="tooltip" data-placement="top"
+                                                        title="{{ $status->status->status_description }}">
+                                                        <h4>{{ $status->status->status_name }}</h4>
+                                                        <p>
+                                                            @if ($statusDate)
+                                                                {{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: ' . $statusDate->format('Y-m-d') }}
+                                                            @else
+                                                                TBC
+                                                            @endif
+                                                        </p>
+                                                    </div>
 
-                                                <div class="status-box {{ $isPast ? '' : 'expected' }}"
-                                                    data-toggle="tooltip" data-placement="top"
-                                                    title="{{ $status->status->status_description }}">
-                                                    <h4>{{ $status->status->status_name }}</h4>
-                                                    <p>{{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: '.$statusDate->format('Y-m-d')  }}
-                                                    </p>
-                                                </div>
-
-                                                @if (!$loop->last)
-                                                <span class="arrow">→</span>
+                                                    @if (!$loop->last)
+                                                        <span class="arrow">→</span>
+                                                    @endif
                                                 @endif
-
-                                                @endif
-                                                @endforeach
+                                            @endforeach
                                             </div>
 
                                             <script>
@@ -624,7 +629,7 @@ class CampaignTable {
         const globalFilter = document.getElementById(this.globalFilterId).value.toLowerCase().trim();
         const columnFilters = {
             campaign_name: this.table.querySelector('[data-column="campaign_name"]')?.value.toLowerCase()
-            .trim(),
+                .trim(),
             orderNumbers: this.table.querySelector('[data-column="orderNumbers"]')?.value.toLowerCase().trim(),
             date_admission: this.table.querySelector('[data-column="date_admission"]')?.value,
             end_date: this.table.querySelector('[data-column="end_date"]')?.value,

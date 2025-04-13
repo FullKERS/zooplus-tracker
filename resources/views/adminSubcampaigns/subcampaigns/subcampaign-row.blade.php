@@ -76,13 +76,11 @@ $isNew = is_null($subcampaign);
                             {{ $status->status_name }}
                         </td>
                         <td>
-                            <input type="datetime-local" data-status-id="{{$status->id}}" class="form-control form-control-sm"
+                            <input type="datetime-local" data-status-id="{{$status->id}}"
+                                class="form-control form-control-sm"
                                 name="subcampaigns[{{ $index }}][statuses][{{ $statusIndex }}][status_date]"
-                                value="{{ $subStatus->status_date ?? now()->setTime(0,0)->format('Y-m-d\TH:i') }}"
-                                @if(false)
-                            min="{{ now()->setTime(0,0)->format('Y-m-d\TH:i') }}"
-                            @endif
-                            required>
+                                value="{{ $subStatus->status_date ?? null }}"
+                                @if(false) min="{{ now()->setTime(0,0)->format('Y-m-d\TH:i') }}" required @endif >
                         </td>
                     </tr>
                     @endforeach

@@ -25,7 +25,7 @@ class Status extends Model
      *
      * @var array
      */
-    protected $fillable = ['status_name', 'status_description', 'order', 'active'];
+    protected $fillable = ['status_name', 'status_description', 'order', 'active', 'function_flag'];
 
     
 }
