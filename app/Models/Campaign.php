@@ -97,7 +97,7 @@ class Campaign extends Model
                 $query->where('campaign_id', $this->id);
             })
             ->whereHas('status', function ($query) {
-                $query->where('status_name', 'Order Received');
+                $query->where('function_flag', 'OTRZYMANIE_ZAMOWIENIA');
             })
             ->min('status_date');
 
@@ -110,7 +110,7 @@ class Campaign extends Model
                 $query->where('campaign_id', $this->id);
             })
             ->whereHas('status', function ($query) {
-                $query->where('status_name', 'Shipment dispatch');
+                $query->where('function_flag', 'DATA_NADANIA');
             })
             ->max('status_date');
 
@@ -121,7 +121,7 @@ class Campaign extends Model
     {
         $dates = $this->subcampaigns->flatMap(function($subcampaign) {
             return $subcampaign->statuses
-                ->where('status.status_name', 'Estimated delivery time')
+                ->where('status.function_flag', 'DORECZENIE')
                 ->pluck('status_date');
         })->sort();
 

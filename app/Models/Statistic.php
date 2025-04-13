@@ -17,29 +17,33 @@ class Statistic extends Model
     }
 
     /**
-     * Liczba aktywnych kampanii (z przynajmniej jedną subkampanią z Estimated delivery time w przyszłości)
+     * Liczba aktywnych kampanii (z przynajmniej jedną subkampanią In progress)
      */
     public static function openProjects(): int
     {
-        return Campaign::whereHas('subcampaigns.statuses', function($query) {
-            $query->whereHas('status', function($q) {
-                $q->where('status_name', 'Estimated delivery time')
-                  ->whereDate('status_date', '>', Carbon::now());
-            });
-        })->count();
+        return Campaign::with('subcampaigns')
+            ->get()
+            ->filter(function ($campaign) {
+                return $campaign->subcampaigns->isNotEmpty() &&
+                    $campaign->subcampaigns->contains(function ($sub) {
+                        return $sub->status_txt !== 'Completed';
+                    });
+            })->count();
     }
 
     /**
-     * Liczba zakończonych kampanii (z przynajmniej jedną subkampanią z Estimated delivery time w przeszłości)
+     * Liczba zakończonych kampanii (wszystkie subkampanie Completed)
      */
     public static function completedProjects(): int
     {
-        return Campaign::whereHas('subcampaigns.statuses', function($query) {
-            $query->whereHas('status', function($q) {
-                $q->where('status_name', 'Estimated delivery time')
-                  ->whereDate('status_date', '<=', Carbon::now());
-            });
-        })->count();
+        return Campaign::with('subcampaigns')
+            ->get()
+            ->filter(function ($campaign) {
+                return $campaign->subcampaigns->isNotEmpty() &&
+                    $campaign->subcampaigns->every(function ($sub) {
+                        return $sub->status_txt === 'Completed';
+                    });
+            })->count();
     }
 
 
@@ -50,7 +54,7 @@ class Statistic extends Model
     {
         return Subcampaign::whereHas('statuses', function($query) {
             $query->whereHas('status', function($q) {
-                $q->where('status_name', 'Shipment dispatch')
+                $q->where('function_flag', 'DATA_NADANIA')
                   ->whereDate('status_date', '<=', Carbon::now());
             });
         })->sum('quantity');
@@ -67,7 +71,7 @@ class Statistic extends Model
         ->join('subcampaigns', 'countries.id', '=', 'subcampaigns.country_id')
         ->join('subcampaign_statuses', 'subcampaigns.id', '=', 'subcampaign_statuses.subcampaign_id')
         ->join('statuses', 'subcampaign_statuses.status_id', '=', 'statuses.id')
-        ->where('statuses.status_name', 'Shipment dispatch')
+        ->where('statuses.function_flag', 'DATA_NADANIA')
         ->where('subcampaign_statuses.status_date', '<', now())
         ->groupBy(
             'countries.id',
