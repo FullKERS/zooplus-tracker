@@ -56,6 +56,13 @@ class Campaign extends Model
             return 'In progress'; // Jeśli brak subkampanii, uznajemy, że jest w trakcie
         }
 
+        // Jeśli którakolwiek subkampania ma ustawiony status (np. paused, cancelled), to kampania jest w trakcie
+        if ($subcampaigns->contains(function ($sub) {
+            return !empty($sub->status);
+        })) {
+            return 'In progress';
+        }
+
         // Liczba subkampanii z status 'Completed'
         $completedCount = $subcampaigns->filter(function ($subcampaigns) {
             return $subcampaigns->status_txt === 'Completed';

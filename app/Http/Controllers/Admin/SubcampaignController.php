@@ -31,6 +31,7 @@ class SubcampaignController extends Controller
             'subcampaigns.*.country_id' => 'required|exists:countries,id',
             'subcampaigns.*.order_number' => 'nullable|string|max:255',
             'subcampaigns.*.quantity' => 'nullable|integer|min:0',
+            'subcampaigns.*.status' => 'nullable|in:on_hold,cancelled',
             'subcampaigns.*.statuses' => 'required|array',
             'subcampaigns.*.statuses.*.id' => [
                 'nullable',
@@ -72,7 +73,8 @@ class SubcampaignController extends Controller
                 'subcampaign_name' => $data['subcampaign_name'],
                 'country_id' => $data['country_id'],
                 'order_number' => $data['order_number'],
-                'quantity' => $data['quantity']
+                'quantity' => $data['quantity'],
+                'status' => $data['status'] ?? null
             ]
         );
     }

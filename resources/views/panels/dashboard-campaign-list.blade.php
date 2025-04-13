@@ -156,26 +156,36 @@
                                     <td class="td-center">{{ number_format($subcampaign->quantity, 0, ',', ' ') }} pcs.
                                     </td>
                                     <td class="td-center">
-    @php
-        $deliveryStatus = $subcampaign->statuses->firstWhere('status.function_flag', 'DORECZENIE'); /*DORECZONE DO KONCOWEGO KLIENTA*/
-    @endphp
+                                        @php
+                                        $deliveryStatus = $subcampaign->statuses->firstWhere('status.function_flag',
+                                        'DORECZENIE'); /*DORECZONE DO KONCOWEGO KLIENTA*/
+                                        @endphp
 
-    @if ($deliveryStatus && \Carbon\Carbon::parse($deliveryStatus->status_date)->isPast())
-        {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
-    @elseif ($deliveryStatus && $deliveryStatus->status_date)
-        <div class="delivery-wrapper">
-            {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
-            <span class="tbc-badge">TBC</span>
-        </div>
-    @else
-        TBC
-    @endif
-</td>
+                                        @if ($subcampaign->status != "")
+                                        <span class="badge badge-warning">TBC</span>
+                                        @elseif ($deliveryStatus &&
+                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->isPast())
+                                        {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
+                                        @elseif ($deliveryStatus && $deliveryStatus->status_date)
+                                        <div class="delivery-wrapper">
+                                            {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
+                                            <span class="tbc-badge">TBC</span>
+                                        </div>
+                                        @else
+                                            <span class="tbc-badge">TBC</span>
+                                        @endif
+                                    </td>
                                     <td class="td-center">
+                                        @if($subcampaign->status === 'on_hold')
+                                        <span class="badge badge-danger">On hold</span>
+                                        @elseif($subcampaign->status === 'cancelled')
+                                        <span class="badge badge-danger">Cancelled</span>
+                                        @else
                                         <span
                                             class="badge {{ $subcampaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
                                             {{ $subcampaign->status_txt }}
                                         </span>
+                                        @endif
                                     </td>
                                 </tr>
                                 <tr class="expandable-body">
@@ -185,32 +195,33 @@
 
 
                                             <div class="timeline-box">
-                                            @foreach ($subcampaign->statuses as $index => $status)
+                                                @foreach ($subcampaign->statuses as $index => $status)
                                                 @php
-                                                    $statusDateRaw = $status->status_date;
-                                                    $statusDate = $statusDateRaw ? \Carbon\Carbon::parse($statusDateRaw) : null;
-                                                    $isPast = $statusDate ? $statusDate->isPast() : false;
+                                                $statusDateRaw = $status->status_date;
+                                                $statusDate = $statusDateRaw ? \Carbon\Carbon::parse($statusDateRaw) :
+                                                null;
+                                                $isPast = $statusDate ? $statusDate->isPast() : false;
                                                 @endphp
 
                                                 @if($status->status->function_flag != 'OTRZYMANIE_ZAMOWIENIA')
-                                                    <div class="status-box {{ !$statusDate || !$isPast ? 'expected' : '' }}"
-                                                        data-toggle="tooltip" data-placement="top"
-                                                        title="{{ $status->status->status_description }}">
-                                                        <h4>{{ $status->status->status_name }}</h4>
-                                                        <p>
-                                                            @if ($statusDate)
-                                                                {{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: ' . $statusDate->format('Y-m-d') }}
-                                                            @else
-                                                                TBC
-                                                            @endif
-                                                        </p>
-                                                    </div>
+                                                <div class="status-box {{ !$statusDate || !$isPast ? 'expected' : '' }}"
+                                                    data-toggle="tooltip" data-placement="top"
+                                                    title="{{ $status->status->status_description }}">
+                                                    <h4>{{ $status->status->status_name }}</h4>
+                                                    <p>
+                                                        @if ($statusDate)
+                                                        {{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: ' . $statusDate->format('Y-m-d') }}
+                                                        @else
+                                                        TBC
+                                                        @endif
+                                                    </p>
+                                                </div>
 
-                                                    @if (!$loop->last)
-                                                        <span class="arrow">→</span>
-                                                    @endif
+                                                @if (!$loop->last)
+                                                <span class="arrow">→</span>
                                                 @endif
-                                            @endforeach
+                                                @endif
+                                                @endforeach
                                             </div>
 
                                             <script>
@@ -401,35 +412,37 @@
                                     </td>
                                     <td class="td-center">
                                         @php
-
                                         $deliveryStatus = $subcampaign->statuses->firstWhere('status.function_flag',
                                         'DORECZENIE'); /*DORECZONE DO KONCOWEGO KLIENTA*/
-
-
-                                        if ($deliveryStatus &&
-                                        (\Carbon\Carbon::parse($deliveryStatus->status_date)->isPast())) {
-                                        $deliveryDate =
-                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d');
-                                        } else {
-                                        if($deliveryStatus){
-                                        $deliveryDate =
-                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d').' -
-                                        '.'TBC';
-                                        }
-                                        else{
-                                        $deliveryDate = 'TBC';
-                                        }
-
-                                        }
                                         @endphp
 
-                                        {{ $deliveryDate }}
+                                        @if ($subcampaign->status != "")
+                                        <span class="badge badge-warning">TBC</span>
+                                        @elseif ($deliveryStatus &&
+                                        \Carbon\Carbon::parse($deliveryStatus->status_date)->isPast())
+                                        {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
+                                        @elseif ($deliveryStatus && $deliveryStatus->status_date)
+                                        <div class="delivery-wrapper">
+                                            {{ \Carbon\Carbon::parse($deliveryStatus->status_date)->format('Y-m-d') }}
+                                            <span class="tbc-badge">TBC</span>
+                                        </div>
+                                        @else
+                                            <span class="tbc-badge">TBC</span>
+                                        @endif
                                     </td>
                                     <td class="td-center">
+                                    <td class="td-center">
+                                        @if($subcampaign->status === 'on_hold')
+                                        <span class="badge badge-danger">On hold</span>
+                                        @elseif($subcampaign->status === 'cancelled')
+                                        <span class="badge badge-danger">Cancelled</span>
+                                        @else
                                         <span
                                             class="badge {{ $subcampaign->status_txt === 'Completed' ? 'badge-success' : 'badge-warning' }}">
                                             {{ $subcampaign->status_txt }}
                                         </span>
+                                        @endif
+                                    </td>
                                     </td>
                                 </tr>
                                 <tr class="expandable-body">
@@ -439,32 +452,33 @@
 
 
                                             <div class="timeline-box">
-                                            @foreach ($subcampaign->statuses as $index => $status)
+                                                @foreach ($subcampaign->statuses as $index => $status)
                                                 @php
-                                                    $statusDateRaw = $status->status_date;
-                                                    $statusDate = $statusDateRaw ? \Carbon\Carbon::parse($statusDateRaw) : null;
-                                                    $isPast = $statusDate ? $statusDate->isPast() : false;
+                                                $statusDateRaw = $status->status_date;
+                                                $statusDate = $statusDateRaw ? \Carbon\Carbon::parse($statusDateRaw) :
+                                                null;
+                                                $isPast = $statusDate ? $statusDate->isPast() : false;
                                                 @endphp
 
                                                 @if($status->status->function_flag != 'OTRZYMANIE_ZAMOWIENIA')
-                                                    <div class="status-box {{ !$statusDate || !$isPast ? 'expected' : '' }}"
-                                                        data-toggle="tooltip" data-placement="top"
-                                                        title="{{ $status->status->status_description }}">
-                                                        <h4>{{ $status->status->status_name }}</h4>
-                                                        <p>
-                                                            @if ($statusDate)
-                                                                {{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: ' . $statusDate->format('Y-m-d') }}
-                                                            @else
-                                                                TBC
-                                                            @endif
-                                                        </p>
-                                                    </div>
+                                                <div class="status-box {{ !$statusDate || !$isPast ? 'expected' : '' }}"
+                                                    data-toggle="tooltip" data-placement="top"
+                                                    title="{{ $status->status->status_description }}">
+                                                    <h4>{{ $status->status->status_name }}</h4>
+                                                    <p>
+                                                        @if ($statusDate)
+                                                        {{ $isPast ? $statusDate->format('Y-m-d') : 'Expected: ' . $statusDate->format('Y-m-d') }}
+                                                        @else
+                                                        TBC
+                                                        @endif
+                                                    </p>
+                                                </div>
 
-                                                    @if (!$loop->last)
-                                                        <span class="arrow">→</span>
-                                                    @endif
+                                                @if (!$loop->last)
+                                                <span class="arrow">→</span>
                                                 @endif
-                                            @endforeach
+                                                @endif
+                                                @endforeach
                                             </div>
 
                                             <script>

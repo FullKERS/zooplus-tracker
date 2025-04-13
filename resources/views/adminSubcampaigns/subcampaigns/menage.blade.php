@@ -30,6 +30,7 @@
                                 <th>Kraj</th>
                                 <th>Nr zamówienia</th>
                                 <th>Ilość</th>
+                                <th>Stan</th>
                                 <th>Statusy</th>
                                 <th width="80">
                                     <button type="button" class="btn btn-success btn-sm" id="addSubcampaign">

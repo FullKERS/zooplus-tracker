@@ -42,6 +42,14 @@ $isNew = is_null($subcampaign);
             value="{{ $subcampaign->quantity ?? '' }}">
     </td>
 
+    <td>
+        <select class="form-control form-control-sm" name="subcampaigns[{{ $index }}][status]">
+            <option value="" @selected(empty($subcampaign->status ?? ''))>—</option>
+            <option value="on_hold" @selected(($subcampaign->status ?? '') === 'on_hold')>On hold</option>
+            <option value="cancelled" @selected(($subcampaign->status ?? '') === 'cancelled')>Cancelled</option>
+        </select>
+    </td>
+
     <td class="status-counter">
         {{ count($statuses) }} statusów
     </td>
@@ -73,7 +81,7 @@ $isNew = is_null($subcampaign);
                             <input type="hidden"
                                 name="subcampaigns[{{ $index }}][statuses][{{ $statusIndex }}][status_id]"
                                 value="{{ $status->id }}">
-                            {{ $status->status_name }}
+                            {{ $status->status_name }} <span class="badge badge-soft-info">{{ $status->function_flag }}</span>
                         </td>
                         <td>
                             <input type="datetime-local" data-status-id="{{$status->id}}"

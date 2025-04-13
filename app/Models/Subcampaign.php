@@ -53,6 +53,11 @@ class Subcampaign extends Model
 
     public function getStatusTxtAttribute(): string
     {
+        // Jeśli subkampania ma ręcznie ustawiony status (np. paused, cancelled), traktuj jako 'In progress'
+        if (!empty($this->status)) {
+            return 'In progress';
+        }
+
         // Pobranie statusu 'Estimated delivery time', jeśli istnieje
         $distributionStatus = $this->statuses()
             ->whereHas('status', function ($query) {
@@ -68,9 +73,9 @@ class Subcampaign extends Model
 
         // Pobranie ostatniego statusu (jeśli istnieje)
         $lastStatus = $this->statuses()
-        ->where('status_date', '<=', now())
-        ->orderByDesc('status_date')
-        ->first();
+            ->where('status_date', '<=', now())
+            ->orderByDesc('status_date')
+            ->first();
 
         // Zwróć nazwę ostatniego statusu, jeśli istnieje, w przeciwnym razie 'In progress'
         return $lastStatus ? $lastStatus->status->status_name : 'In progress';

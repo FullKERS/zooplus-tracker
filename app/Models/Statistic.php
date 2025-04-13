@@ -73,6 +73,7 @@ class Statistic extends Model
         ->join('statuses', 'subcampaign_statuses.status_id', '=', 'statuses.id')
         ->where('statuses.function_flag', 'DATA_NADANIA')
         ->where('subcampaign_statuses.status_date', '<', now())
+        ->whereNull('subcampaigns.status')
         ->groupBy(
             'countries.id',
             'countries.iso_code',  

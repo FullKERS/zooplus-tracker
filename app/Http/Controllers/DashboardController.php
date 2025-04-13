@@ -36,15 +36,20 @@ class DashboardController extends Controller
         // Podział na aktywne/zakończone
         $activeCampaigns = $campaignes->filter(function($campaign) {
             return $campaign->subcampaigns->contains(function($subcampaign) {
-                return $subcampaign->statuses->contains(function($status) {
-                    return $status->status->function_flag === 'DORECZENIE' 
-                        && Carbon::parse($status->status_date)->isFuture();
-                });
+                return 
+                    // Jeśli ma ustawiony status (np. "paused", "cancelled")
+                    !empty($subcampaign->status)
+                    ||
+                    // Albo jeśli istnieje status DORECZENIE z datą w przyszłości
+                    $subcampaign->statuses->contains(function($status) {
+                        return $status->status->function_flag === 'DORECZENIE' 
+                            && Carbon::parse($status->status_date)->isFuture();
+                    });
             });
         })->sortBy(function($campaign) {
             return $campaign->getEarliestEstimatedDelivery();
         });
-
+        
         $completedCampaigns = $campaignes->reject(function($campaign) use ($activeCampaigns) {
             return $activeCampaigns->contains($campaign);
         })->sortByDesc(function($campaign) {

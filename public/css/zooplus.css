@@ -429,3 +429,11 @@ table th{
     white-space: nowrap;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
+
+.badge-soft-info {
+    background-color: rgba(0, 123, 255, 0.1); /* stonowany niebieski */
+    color: #007bff;
+    font-size: 0.75rem;
+    padding: 0.25em 0.5em;
+    border-radius: 0.2rem;
+}
