@@ -431,7 +431,6 @@
                                         @endif
                                     </td>
                                     <td class="td-center">
-                                    <td class="td-center">
                                         @if($subcampaign->status === 'on_hold')
                                         <span class="badge badge-danger">On hold</span>
                                         @elseif($subcampaign->status === 'cancelled')
