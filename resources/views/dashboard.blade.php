@@ -77,6 +77,8 @@
 
     </div>
 
+    @include('partial.modals')
+
     
     @include('partial.footer')
 

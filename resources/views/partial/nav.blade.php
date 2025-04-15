@@ -57,6 +57,14 @@
                     <a class="dropdown-item"
                         href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.TransmittalMgr.php">My
                         Transmittals</a>
+
+                    @if(Auth::guard('web-local')->check())
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#changePasswordModal">
+                        Change Password
+                    </a>
+                    @endif
+
+
                     <a href="#" class="dropdown-item"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         Sign out

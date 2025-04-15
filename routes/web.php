@@ -45,11 +45,12 @@ Route::post('/local-login', [LocalAuthController::class, 'login'])->name('local.
 
 //Dostep po zalogowaniu (zwyky)
 Route::middleware(['check.auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
     Route::resource('calendar-entries', CalendarEntryController::class)->except(['show']);
     Route::get('/calendar-entries/by-date/{date}', [CalendarEntryController::class, 'getByDate'])->name('calendar-entries.by-date');
     Route::get('/calendar-upcoming', [CalendarEntryController::class, 'getUpcoming'])->name('calendar-entries.upcoming');
+    Route::post('/change-password', [LocalAuthController::class, 'changePassword'])->name('password.change');
 });
 
 //Dostep admin
