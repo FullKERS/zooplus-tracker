@@ -13,8 +13,12 @@ class CalendarEntry extends Model
         'date',
         'title',
         'description',
-        'user_id'
+        'user_id',
+        'user_type'
     ];
 
-
+    public function user()
+    {
+        return $this->morphTo();
+    }
 }

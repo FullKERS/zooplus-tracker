@@ -21,23 +21,35 @@ use App\Http\Controllers\CalendarEntryController;
 |
 */
 
-//Logowanie SeedDMS
-Route::get('/login/{idSesji}', [LoginController::class, 'loginWithSessionId']);
-Route::get('/login', function () {
-    return redirect(env('SEEDDMS_URL'));
+//wejscie z roota
+Route::get('/', function () {
+    if (auth()->check() || auth('web-local')->check()) {
+        return redirect('/dashboard');
+    }
+
+    return redirect('/login');
 });
 
+//Logowanie SeedDMS
+Route::get('/login/{idSesji}', [LoginController::class, 'loginWithSessionId']); //logowanie seeddms
+Route::get('/login', [LocalAuthController::class, 'showLoginForm'])->name('local.login'); //logowanie - formularz
+Route::post('/login', [LocalAuthController::class, 'login'])->name('local.login.submit'); //logowanie POST
+/*Route::get('/login', function () {
+    return redirect(env('SEEDDMS_URL'));
+});*/
+
 // Logowanie lokalne
-Route::get('/local-login', [LocalAuthController::class, 'showLoginForm'])->name('local.login');
-Route::post('/local-login', [LocalAuthController::class, 'login'])->name('local.login.submit');
+/*Route::get('/local-login', [LocalAuthController::class, 'showLoginForm'])->name('local.login');
+Route::post('/local-login', [LocalAuthController::class, 'login'])->name('local.login.submit');*/
 
 
 //Dostep po zalogowaniu (zwyky)
 Route::middleware(['check.auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
-    Route::post('/logout', [DashboardController::class, 'logout']);
+    Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
     Route::resource('calendar-entries', CalendarEntryController::class)->except(['show']);
     Route::get('/calendar-entries/by-date/{date}', [CalendarEntryController::class, 'getByDate'])->name('calendar-entries.by-date');
+    Route::get('/calendar-upcoming', [CalendarEntryController::class, 'getUpcoming'])->name('calendar-entries.upcoming');
 });
 
 //Dostep admin

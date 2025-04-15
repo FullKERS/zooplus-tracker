@@ -182,7 +182,7 @@ $(document).ready(function() {
     // Load upcoming events
 
     function loadUpcomingEvents() {
-        $.get(`${BASE_URL}/calendar-entries`, function(response) {
+        $.get(`${BASE_URL}/calendar-upcoming`, function(response) {
             const entries = Array.isArray(response) ? response : [];
 
             const html = entries.length ? entries.map(entry => `

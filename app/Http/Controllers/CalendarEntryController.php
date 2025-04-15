@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CalendarEntry;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class CalendarEntryController extends Controller
 {
@@ -30,28 +31,28 @@ class CalendarEntryController extends Controller
 
     public function index()
     {
-        try {
-            $user = $this->getAuthenticatedUser();
-            
-            $entries = CalendarEntry::whereBetween('date', [
-                now()->format('Y-m-d'),
-                now()->addDays(7)->format('Y-m-d')
-            ])->orderBy('date')->get();
+        // Wszystkie wpisy bez ograniczenia daty
+        $entries = CalendarEntry::orderBy('date')->get();
 
-            return response()->json($entries);
-
-        } catch (\Exception $e) {
-            \Log::error('Calendar error: ' . $e->getMessage());
-            return response()->json([
-                'error' => $e->getMessage()
-            ], $e->getCode() >= 400 ? $e->getCode() : 500);
-        }
+        return response()->json($entries);
     }
+
+
+    public function getUpcoming()
+    {
+        $entries = CalendarEntry::where('date', '>=', Carbon::now()->toDateString())
+            ->orderBy('date')
+            ->take(10)
+            ->get();
+
+        return response()->json($entries);
+    }
+
 
     public function getByDate($date)
     {
         $user = $this->getAuthenticatedUser();
-        
+
         $entries = $user->calendarEntries()
             ->whereDate('date', $date)
             ->get();
@@ -73,7 +74,8 @@ class CalendarEntryController extends Controller
             'date' => $request->date,
             'title' => $request->title,
             'description' => $request->description,
-            'user_id' => $user->id 
+            'user_id' => $user->id,
+            'user_type' => get_class($user), // App\Models\User lub App\Models\LocalUser
         ]);
 
         return response()->json($entry, 201);

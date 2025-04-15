@@ -22,6 +22,28 @@ class CheckAuth
 
         // Local auth
         if (Auth::guard('web-local')->check()) {
+            /** @var \App\Models\LocalUser $localUser */
+            $localUser = Auth::guard('web-local')->user();
+        
+            // Skopiuj dane lokalnego użytkownika do obiektu klasy User
+            $user = new \App\Models\User([
+                'id' => $localUser->id,
+                'login' => $localUser->login,
+                'fullName' => $localUser->fullName,
+                'email' => $localUser->email,
+                'language' => $localUser->language,
+                'theme' => $localUser->theme,
+                'role' => $localUser->role,
+                'hidden' => $localUser->hidden,
+                'pwdExpiration' => $localUser->pwdExpiration,
+                'disabled' => $localUser->disabled,
+            ]);
+            $user->setConnection('mysql'); // baza lokalna
+            $user->exists = true;
+        
+            $request->merge(['authenticated_user' => $localUser]);
+            Auth::setUser($localUser); // nadal działa Auth::user()
+        
             return $next($request);
         }
 

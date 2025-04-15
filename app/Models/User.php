@@ -84,6 +84,6 @@ class User extends Authenticatable
 
     public function calendarEntries()
     {
-        return $this->hasMany(\App\Models\CalendarEntry::class);
+        return $this->morphMany(CalendarEntry::class, 'user');
     }
 }

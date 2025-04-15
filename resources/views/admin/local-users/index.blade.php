@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'ZooPlus Dashboard -  Panel administracyjny')
+@section('title', 'ZooPlus Dashboard - Panel administracyjny')
 
 @section('content')
 <div class="card card-primary">
@@ -16,10 +16,12 @@
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
-                    <th style="width: 10%">#</th>
-                    <th>Name</th>
+                    <th style="width: 5%">#</th>
+                    <th>Login</th>
+                    <th>Full Name</th>
                     <th>Email</th>
-                    <th>Admin</th>
+                    <th>Role</th>
+                    <th>Status</th>
                     <th style="width: 20%">Actions</th>
                 </tr>
             </thead>
@@ -27,16 +29,23 @@
                 @foreach($users as $user)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->login }}</td>
+                    <td>{{ $user->fullName }}</td>
                     <td>{{ $user->email }}</td>
                     <td>
-                        @if($user->is_admin)
-                            <span class="badge bg-success">Yes</span>
+                        <span class="badge {{ $user->role === 'admin' ? 'bg-success' : 'bg-info' }}">
+                            {{ ucfirst($user->role) }}
+                        </span>
+                    </td>
+                    <td>
+                        @if($user->disabled)
+                        <span class="badge bg-danger">Disabled</span>
                         @else
-                            <span class="badge bg-danger">No</span>
+                        <span class="badge bg-success">Active</span>
                         @endif
                     </td>
                     <td class="text-center">
+                        {{-- przyciski edycji/usuwania (do wdrożenia w razie potrzeby) --}}
                         <a href="#" class="btn btn-sm btn-primary">
                             <i class="fas fa-edit"></i>
                         </a>

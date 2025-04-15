@@ -7,14 +7,15 @@ use App\Models\Session;
 use App\Models\Campaign;
 use App\Models\Statistic;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    
+
     public function index(Request $request)
     {
         $user = $request->get('authenticated_user');
-        
+
         $campaignes = Campaign::with(['subcampaigns.statuses.status'])->get();
 
         $stats = [
@@ -31,37 +32,57 @@ class DashboardController extends Controller
                 })->values(); // resetuj klucze, żeby były od zera
             });
         });
-    
+
 
         // Podział na aktywne/zakończone
-        $activeCampaigns = $campaignes->filter(function($campaign) {
-            return $campaign->subcampaigns->contains(function($subcampaign) {
-                return 
+        $activeCampaigns = $campaignes->filter(function ($campaign) {
+            return $campaign->subcampaigns->contains(function ($subcampaign) {
+                return
                     // Jeśli ma ustawiony status (np. "paused", "cancelled")
                     !empty($subcampaign->status)
                     ||
                     // Albo jeśli istnieje status DORECZENIE z datą w przyszłości
-                    $subcampaign->statuses->contains(function($status) {
-                        return $status->status->function_flag === 'DORECZENIE' 
+                    $subcampaign->statuses->contains(function ($status) {
+                        return $status->status->function_flag === 'DORECZENIE'
                             && Carbon::parse($status->status_date)->isFuture();
                     });
             });
-        })->sortBy(function($campaign) {
+        })->sortBy(function ($campaign) {
             return $campaign->getEarliestEstimatedDelivery();
         });
-        
-        $completedCampaigns = $campaignes->reject(function($campaign) use ($activeCampaigns) {
+
+        $completedCampaigns = $campaignes->reject(function ($campaign) use ($activeCampaigns) {
             return $activeCampaigns->contains($campaign);
-        })->sortByDesc(function($campaign) {
+        })->sortByDesc(function ($campaign) {
             return $campaign->getEarliestEstimatedDelivery();
         });
 
         return view('dashboard', compact('user', 'activeCampaigns', 'completedCampaigns', 'stats'));
     }
 
+
     public function logout(Request $request)
     {
+        // Usuń idSesji, jeśli istnieje
+        $isSeedUser = session()->has('idSesji');
+
         session()->forget('idSesji');
-        return redirect('/login')->with('success', 'Wylogowano pomyślnie.');
+
+        if (Auth::guard('web-local')->check()) {
+            Auth::guard('web-local')->logout();
+        }
+
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Jeżeli był to użytkownik SeedDMS, przekieruj na logout SeedDMS
+        if ($isSeedUser) {
+            $logoutUrl = config('app.seeddms_url') . config('app.seeddms_url_additional') . 'op/op.Logout.php';
+            return redirect($logoutUrl);
+        }
+
+        return redirect('/login')->with('success', 'You have been logged out.');
     }
 }

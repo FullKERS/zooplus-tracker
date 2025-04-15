@@ -57,9 +57,14 @@
                     <a class="dropdown-item"
                         href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.TransmittalMgr.php">My
                         Transmittals</a>
-                    <a class="dropdown-item"
-                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}op/op.Logout.php">Sign
-                        out</a>
+                    <a href="#" class="dropdown-item"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        Sign out
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
                 </div>
             </li>
         </ul>
