@@ -46,7 +46,7 @@
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarMainUser"
                     aria-haspopup="true" aria-expanded="false">Signed in as '{{ $user->fullName }}'</a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarMainUser">
-                    @if(Auth::guard('web')->check())
+                    @if(Auth::guard('web-seeddms')->check())
                     <a class="dropdown-item"
                         href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.Dashboard.php">
                         Dashboard
