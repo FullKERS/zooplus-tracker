@@ -46,18 +46,24 @@
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarMainUser"
                     aria-haspopup="true" aria-expanded="false">Signed in as '{{ $user->fullName }}'</a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarMainUser">
+                    @if(Auth::guard('web')->check())
                     <a class="dropdown-item"
-                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.Dashboard.php">Dashboard</a>
+                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.Dashboard.php">
+                        Dashboard
+                    </a>
                     <a class="dropdown-item"
-                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.MyDocuments.php?inProcess=1">My
-                        Documents</a>
+                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.MyDocuments.php?inProcess=1">
+                        My Documents
+                    </a>
                     <a class="dropdown-item"
-                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.MyAccount.php">My
-                        Account</a>
+                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.MyAccount.php">
+                        My Account
+                    </a>
                     <a class="dropdown-item"
-                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.TransmittalMgr.php">My
-                        Transmittals</a>
-
+                        href="{{ config('app.seeddms_url') }}{{ config('app.seeddms_url_additional') }}out/out.TransmittalMgr.php">
+                        My Transmittals
+                    </a>
+                    @endif
                     @if(Auth::guard('web-local')->check())
                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#changePasswordModal">
                         Change Password
