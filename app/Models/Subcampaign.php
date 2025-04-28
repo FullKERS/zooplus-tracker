@@ -67,7 +67,7 @@ class Subcampaign extends Model
             ->first();
 
         // Jeśli status 'Estimated delivery time' istnieje i jego data jest w przeszłości, zwróć 'Completed'
-        if ($distributionStatus && $distributionStatus->status_date <= now()) {
+        if ($distributionStatus && $distributionStatus->status_date && $distributionStatus->status_date <= now()) {
             return 'Completed';
         }
 
