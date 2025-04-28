@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use DateTime;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class Campaign extends Model
 {
@@ -28,7 +29,9 @@ class Campaign extends Model
      *
      * @var array
      */
-    protected $fillable = ['campaign_name'];
+    protected $fillable = ['campaign_name', 'is_visible'];
+
+
 
     public function subcampaigns()
     {

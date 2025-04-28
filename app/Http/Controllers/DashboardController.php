@@ -16,7 +16,9 @@ class DashboardController extends Controller
     {
         $user = $request->get('authenticated_user');
 
-        $campaignes = Campaign::with(['subcampaigns.statuses.status'])->get();
+        $campaignes = Campaign::where('is_visible', true)
+            ->with(['subcampaigns.statuses.status'])
+            ->get();
 
         $stats = [
             'projects_total' => Statistic::projectsTotal(),

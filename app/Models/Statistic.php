@@ -13,7 +13,7 @@ class Statistic extends Model
      */
     public static function projectsTotal(): int
     {
-        return Campaign::has('subcampaigns')->count();
+        return Campaign::where('is_visible', true)->has('subcampaigns')->count();
     }
 
     /**
@@ -21,7 +21,8 @@ class Statistic extends Model
      */
     public static function openProjects(): int
     {
-        return Campaign::with('subcampaigns')
+        return Campaign::where('is_visible', true)
+            ->with('subcampaigns')
             ->get()
             ->filter(function ($campaign) {
                 return $campaign->subcampaigns->isNotEmpty() &&
@@ -36,7 +37,8 @@ class Statistic extends Model
      */
     public static function completedProjects(): int
     {
-        return Campaign::with('subcampaigns')
+        return Campaign::where('is_visible', true)
+            ->with('subcampaigns')
             ->get()
             ->filter(function ($campaign) {
                 return $campaign->subcampaigns->isNotEmpty() &&
@@ -52,12 +54,16 @@ class Statistic extends Model
      */
     public static function totalQuantityShipped(): int
     {
-        return Subcampaign::whereHas('statuses', function($query) {
-            $query->whereHas('status', function($q) {
+        return Subcampaign::whereHas('statuses', function ($query) {
+            $query->whereHas('status', function ($q) {
                 $q->where('function_flag', 'DATA_NADANIA')
-                  ->whereDate('status_date', '<=', Carbon::now());
+                    ->whereDate('status_date', '<=', Carbon::now());
             });
-        })->sum('quantity');
+        })
+            ->whereHas('campaign', function ($query) {
+                $query->where('is_visible', true);
+            })
+            ->sum('quantity');
     }
 
     public static function countriesQuantities()
@@ -68,28 +74,30 @@ class Statistic extends Model
             'countries.flag_image',
             DB::raw('SUM(subcampaigns.quantity) as total_quantity')
         ])
-        ->join('subcampaigns', 'countries.id', '=', 'subcampaigns.country_id')
-        ->join('subcampaign_statuses', 'subcampaigns.id', '=', 'subcampaign_statuses.subcampaign_id')
-        ->join('statuses', 'subcampaign_statuses.status_id', '=', 'statuses.id')
-        ->where('statuses.function_flag', 'DATA_NADANIA')
-        ->where('subcampaign_statuses.status_date', '<', now())
-        ->whereNull('subcampaigns.status')
-        ->groupBy(
-            'countries.id',
-            'countries.iso_code',  
-            'countries.name',       
-            'countries.flag_image' 
-        )
-        ->orderByDesc('total_quantity')
-        ->get()
-        ->map(function($country, $index) {
-            return [
-                'lp' => $index + 1,
-                'iso_code' => $country->iso_code,
-                'name' => $country->name,
-                'flag' => $country->flag_image,
-                'total_quantity' => $country->total_quantity
-            ];
-        });
+            ->join('subcampaigns', 'countries.id', '=', 'subcampaigns.country_id')
+            ->join('campaigns', 'subcampaigns.campaign_id', '=', 'campaigns.id') // <-- dodany JOIN
+            ->join('subcampaign_statuses', 'subcampaigns.id', '=', 'subcampaign_statuses.subcampaign_id')
+            ->join('statuses', 'subcampaign_statuses.status_id', '=', 'statuses.id')
+            ->where('campaigns.is_visible', true) // <-- nowy warunek
+            ->where('statuses.function_flag', 'DATA_NADANIA')
+            ->where('subcampaign_statuses.status_date', '<', now())
+            ->whereNull('subcampaigns.status')
+            ->groupBy(
+                'countries.id',
+                'countries.iso_code',
+                'countries.name',
+                'countries.flag_image'
+            )
+            ->orderByDesc('total_quantity')
+            ->get()
+            ->map(function ($country, $index) {
+                return [
+                    'lp' => $index + 1,
+                    'iso_code' => $country->iso_code,
+                    'name' => $country->name,
+                    'flag' => $country->flag_image,
+                    'total_quantity' => $country->total_quantity
+                ];
+            });
     }
 }

@@ -50,6 +50,7 @@ class CampaignController extends Controller
     {
         
         $requestData = $request->all();
+        $requestData['is_visible'] = $request->has('is_visible'); 
         
         Campaign::create($requestData);
 
@@ -96,6 +97,7 @@ class CampaignController extends Controller
     {
         
         $requestData = $request->all();
+        $requestData['is_visible'] = $request->has('is_visible'); 
         
         $campaign = Campaign::findOrFail($id);
         $campaign->update($requestData);
