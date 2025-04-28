@@ -45,7 +45,7 @@ class DashboardController extends Controller
                     ||
                     // Albo jeśli istnieje status DORECZENIE z datą w przyszłości
                     $subcampaign->statuses->contains(function ($status) {
-                        return $status->status->function_flag === 'DORECZENIE'
+                        return $status->status->function_flag === 'DATA_NADANIA'
                             && Carbon::parse($status->status_date)->isFuture();
                     });
             });

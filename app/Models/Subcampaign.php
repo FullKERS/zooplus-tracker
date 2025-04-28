@@ -61,7 +61,7 @@ class Subcampaign extends Model
         // Pobranie statusu 'Estimated delivery time', jeśli istnieje
         $distributionStatus = $this->statuses()
             ->whereHas('status', function ($query) {
-                $query->where('function_flag', 'DORECZENIE');
+                $query->where('function_flag', 'DATA_NADANIA');
             })
             ->orderByDesc('status_date')
             ->first();
